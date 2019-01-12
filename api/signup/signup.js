@@ -1,32 +1,34 @@
 const Joi = require('Joi');
 const mongoose = require('mongoose');
+const ObjectID = require('mongodb').ObjectID;
 const express = require('express');
 const router = express.Router();
-
-
-const {Userdata, validate} = require('../../models/objects/users/userdata');
+const {User, validate} = require('../../models/objects/users/user');
 
 
 /**
- * Creates a user a stores it in database. 
+ *  Creates a user a stores it in database. 
+        First validates input using validate function
+        Then checks if phonenumber is in use
+        If not, then we create a user object and save it to the database
  */
-router.post('/', async (req, res) => {
+router.post('/', async(req, res) => {
     var validateInput = validate(req.body);
 
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
     
-    const userdata = new Userdata({
+    let user = await User.findOne({phone: req.body.phone});
+    if(user) return res.status(400).send('User is already registered');
+
+    user = new User({
         name: req.body.name,
-        surname: req.body.surname,
         phone: req.body.phone,
-        user: {
-            name: req.body.username,
-            password: req.body.password
-        }
+        email: req.body.email,
+        password: req.body.password
     });
 
-    userdata.save();
-    res.send(userdata);
+    user.save();
+    res.send(user);
 });
 
 
