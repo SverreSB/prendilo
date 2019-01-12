@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+//Adding this to not get DeprecationWarning: collection.ensureIndex is deprecated. 
+mongoose.set('useCreateIndex', true);
 const express = require('express');
 app = express();
 
