@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 const express = require('express');
 app = express();
 
+const userdata = require('./api/signup/signup')
+
+
 app.use(express.json());
+app.use('/api/signup/', userdata);
 
 mongoose.connect("mongodb://localhost:27017/giveaway", { useNewUrlParser: true })
     .then( () => console.log('Connected to givaway database'))
