@@ -10,7 +10,8 @@ const bcrypt = require('bcrypt');
 
 
  /**
-  * Salt
+  *   Function for salting password
+         Using bcrypt genSalt
   */
  async function salt(){
     const salt = await bcrypt.genSalt(10);
@@ -18,6 +19,10 @@ const bcrypt = require('bcrypt');
     return salt;
  }
 
+ /**
+  *   Function for hashing salted password
+         Using bcrypt hash to hash salted password.
+  */
  async function hash(password, salt){
    const hashed = await bcrypt.hash(password, salt);
 

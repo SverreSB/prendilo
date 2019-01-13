@@ -20,13 +20,14 @@ const schema = new mongoose.Schema({
     email: {
         type: String,
         min: 6,
-        max: 255,
+        max: 64,
         required: true,
         unique: true
     },
     password: {
         type: String,
-        minlength: 8
+        minlength: 8,
+        maxlength: 128
     }
 });
 
@@ -43,8 +44,8 @@ function validate(body){
     const schema = {
         name: Joi.string().min(2).max(16).required(),
         phone: Joi.number().min(1111).max(99999999999).required(),
-        email: Joi.string().required(),
-        password: Joi.string().min(8).required()
+        email: Joi.string().min(6).max(64).required(),
+        password: Joi.string().min(8).max(128).required()
     }
 
     var validation = Joi.validate(body, schema);
