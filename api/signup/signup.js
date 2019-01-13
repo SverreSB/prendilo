@@ -2,8 +2,7 @@ const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
-const {User, validate} = require('../../models/objects/users/user');
-
+const {User, validateSignup} = require('../../models/objects/users/user');
 
 
 /**
@@ -14,7 +13,7 @@ const {User, validate} = require('../../models/objects/users/user');
         The password is salted and hashed before being stored in db
  */
 router.post('/', async(req, res) => {
-    var validateInput = validate(req.body);
+    var validateInput = validateSignup(req.body);
 
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
     

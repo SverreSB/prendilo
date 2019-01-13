@@ -1,12 +1,18 @@
-const Joi = require('joi');
+const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const express = require('express');
 const router = express.Router();
-const {User} = require('../../models/objects/users/user');
+const {User, validateLogin} = require('../../models/objects/users/user');
 
 
+/**
+ *  Post request for login into a user
+        first validating input using joi, then cheing if user exist.
+        If user doesn't exist, then the password is validated.
+        If password is valid, then a jwt will be created
+ */
 router.post('/', async(req, res) => {
-    const validateInput = validate(req.body);
+    const validateInput = validateLogin(req.body);
 
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
 
@@ -15,24 +21,13 @@ router.post('/', async(req, res) => {
 
     const validPassword = await bcrypt.compare(req.body.password, user.password);
 
-    if(!validPassword) return res.status(400).send('Invalid username or password');
+    if(!validPassword || !user) return res.status(400).send('Invalid username or password');
 
-    res.send('Login successful');
-
+    const token = user.generateJwt();
+    res
+        .header('x-auth-token', token)
+        .send(_.pick(user, ['_id', 'email']));
 });
-
-
-function validate(body){
-    const schema = {
-        email: Joi.string().min(6).max(64).required(),
-        password: Joi.string().min(8).required()
-    };
-
-    const validation = Joi.validate(body, schema);
-
-    return validation;
-
-}
 
 
 module.exports = router;
