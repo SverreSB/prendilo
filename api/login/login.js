@@ -30,13 +30,12 @@ router.post('/', async(req, res) => {
     const token = user.generateJwt();
 
     res
-        .header('x-auth-token', token)
+        //.header('x-auth-token', token)
+        //.header('authorization', token)
         .json({
-            user: _.pick(user, ['_id', 'email']),
+            //user: _.pick(user, ['_id', 'email']),
             token
         });
-
-    
 });
 
 

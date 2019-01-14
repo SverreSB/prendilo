@@ -1,3 +1,4 @@
 node_modules/
 models/helpers/encrypt.js/
 api/account/
+config/

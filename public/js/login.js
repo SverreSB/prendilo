@@ -4,6 +4,7 @@ function initialize() {
     // get button
 	document.querySelector('#btnLogin').addEventListener('click', login);
 	document.querySelector('#btnConfirmation').addEventListener('click', isLoggedIn);
+	document.querySelector('#btnLogout').addEventListener('click', logout);
 }
 
 
@@ -15,7 +16,7 @@ function login() {
 	const email = input[0].value;
 	const password = input[1].value; 
 
-	postData('http://localhost:3000/api/login', { email, password})
+	postLogin('http://localhost:3000/api/login', { email, password})
   		.then(data => console.log(JSON.stringify(data)))
   		.catch(error => console.error(error));
 };
@@ -26,36 +27,50 @@ function login() {
  * 	@param {String} url 
  * 	@param {json} data 
  */
-async function postData(url, data) {
+async function postLogin(url, data) {
 	const response = await fetch(url, {
 		method: "POST", 
 		headers: {
 			"Content-Type": "application/json"
 		},
-		body: JSON.stringify(data),
+		body: JSON.stringify(data)
 	});
 
 	const jsonRes = await response.json();
 	const token = jsonRes.token;
-
 	localStorage.setItem("token", token);
+	
+	return response;	
+}
+
+async function postData(url){
+	const response = await fetch(url, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization": "Bearer " + localStorage.getItem('token') 
+		}
+	});
 
 	return response;
-	
-	
 }
 
 
+/**
+ * 	Test function to see if user is logged in
+ */
 async function isLoggedIn(){
-	let bool = false;
-	const token = localStorage.getItem('token');
+	//const token = localStorage.getItem('token');
 	
-	const response = await postData('http://localhost:3000/api/postFood', {token});
+	const response = await postData('http://localhost:3000/api/postFood');
 
 	console.log(response);
 	if(response.status === 200){
-		bool = true
-	}
-	
-	document.getElementById('isLoggedIn').innerHTML = bool;	
+		document.getElementById('isLoggedIn').innerHTML = true;	
+	}	
+}
+
+
+function logout(){
+	localStorage.clear();
 }
