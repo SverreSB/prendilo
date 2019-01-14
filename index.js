@@ -3,6 +3,8 @@ const config = require('config');
 const express = require('express');
 const signup = require('./api/signup/signup');
 const login = require('./api/login/login');
+const postFood = require('./api/postFood/postFood');
+const account = require('./api/account/account');
 
 //Adding this to not get DeprecationWarning: collection.ensureIndex is deprecated. 
 mongoose.set('useCreateIndex', true);
@@ -29,10 +31,13 @@ mongoose.connect("mongodb://localhost:27017/giveaway", { useNewUrlParser: true }
 app.use(express.json());
 app.use('/api/signup', signup);
 app.use('/api/login', login);
+app.use('/api/postFood', postFood);
+app.use('/api/account', account);
 
+app.use(express.static(__dirname + '/public'));
 
 app.get('/', (req, res) => {
-    res.send('Nothing going on here, just landing page for index.js');
+    res.sendFile('./index.html', {root: __dirname});
 });
 
 const port = process.env.PORT || 3000;

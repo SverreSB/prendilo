@@ -1,9 +1,13 @@
+const {User, validateLogin} = require('../../models/objects/users/user');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
+var bodyParser= require('body-parser');
 const express = require('express');
 const router = express.Router();
-const {User, validateLogin} = require('../../models/objects/users/user');
+const app = express();
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 /**
  *  Post request for login into a user
@@ -24,9 +28,15 @@ router.post('/', async(req, res) => {
     if(!validPassword || !user) return res.status(400).send('Invalid username or password');
 
     const token = user.generateJwt();
+
     res
         .header('x-auth-token', token)
-        .send(_.pick(user, ['_id', 'email']));
+        .json({
+            user: _.pick(user, ['_id', 'email']),
+            token
+        });
+
+    
 });
 
 
