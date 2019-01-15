@@ -42,11 +42,11 @@ app.use(function(err, req, res, next){
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', (req, res) => {
-    res.sendFile('./index.html', {root: __dirname});
+    res.sendFile('./html/index.html', {root: __dirname});
 });
 
 app.get('/postFood', (req, res) => {
-    res.sendFile('./postFood.html', { root: __dirname});
+    res.sendFile('./html/postFood.html', { root: __dirname});
 });
 
 const port = process.env.PORT || 3000;

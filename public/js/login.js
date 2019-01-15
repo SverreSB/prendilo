@@ -45,7 +45,7 @@ async function postLogin(url, data) {
 
 
 async function postData(url){
-	/*const response = */await fetch(url, {
+	const response = await fetch(url, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -53,7 +53,7 @@ async function postData(url){
 		}
 	});
 
-	//return response;
+	return response;
 }
 
 
@@ -61,15 +61,11 @@ async function postData(url){
  * 	Test function to see if user is logged in
  */
 async function isLoggedIn(){
-	//const token = localStorage.getItem('token');
-	postData('http://localhost:3000/api/postFood/redirect');
-	//const response = await postData('http://localhost:3000/api/postFood/redirect');
-
-	/*console.log(response);
+	const response = await postData('http://localhost:3000/api/postFood/redirect');
+	
 	if(response.status === 200){
-		document.getElementById('isLoggedIn').innerHTML = true;
 		window.location.href = response.url;	
-	}*/	
+	}
 }
 
 

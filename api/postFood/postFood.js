@@ -1,6 +1,6 @@
+const {Food} = require('../../models/objects/food/food');
 const auth = require('../../middleware/auth');
-const jwt = require('jsonwebtoken');
-const config = require('config');
+const asyncMiddleware = require('../../middleware/async');
 const express = require('express');
 const _ = require('lodash');
 const bodyParser = require('body-parser');
@@ -12,10 +12,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
+router.post('/', asyncMiddleware(async(req, res) => {
+    const food = new Food(_.pick(req.body, ['name', 'type']));
+    food.save();
+    res.send(_.pick(food, ['_id']));
+
+}));
+
+
+
 /**
  *  Fetching user data for given ID if given token is correct for user asked after
  */
-router.post('/', auth, async (req, res) => {
+/*router.post('/', async (req, res) => {
     jwt.verify(req.token, config.get('jwtPrivateKey'), (err, authData) => {
         if(err){
             res.sendStatus(403);
@@ -28,6 +37,6 @@ router.post('/', auth, async (req, res) => {
         }
     });
     //res.send(_.pick(['email', '_id']));
-});
+});*/
 
 module.exports = router;
