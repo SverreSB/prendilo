@@ -1,3 +1,4 @@
+const asyncMiddleware= require('../../middleware/async');
 const {User, validateLogin} = require('../../models/objects/users/user');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
@@ -15,7 +16,7 @@ app.use(bodyParser.json());
         If user doesn't exist, then the password is validated.
         If password is valid, then a jwt will be created
  */
-router.post('/', async(req, res) => {
+router.post('/', asyncMiddleware(async(req, res) => {
     const validateInput = validateLogin(req.body);
 
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
@@ -29,14 +30,8 @@ router.post('/', async(req, res) => {
 
     const token = user.generateJwt();
 
-    res
-        //.header('x-auth-token', token)
-        //.header('authorization', token)
-        .json({
-            //user: _.pick(user, ['_id', 'email']),
-            token
-        });
-});
+    res.json({token});
+}));
 
 
 module.exports = router;
