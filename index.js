@@ -5,6 +5,7 @@ const signup = require('./api/signup/signup');
 const login = require('./api/login/login');
 const postFood = require('./api/postFood/postFood');
 const account = require('./api/account/account');
+const redirectPF = require('./api/postFood/redirectPostFood');
 
 //Adding this to not get DeprecationWarning: collection.ensureIndex is deprecated. 
 mongoose.set('useCreateIndex', true);
@@ -33,6 +34,7 @@ app.use('/api/signup', signup);
 app.use('/api/login', login);
 app.use('/api/postFood', postFood);
 app.use('/api/account', account);
+app.use('/api/postFood/redirect', redirectPF);
 app.use(function(err, req, res, next){
     res.status(500).send('Something went wrong');
 });
@@ -41,6 +43,10 @@ app.use(express.static(__dirname + '/public'));
 
 app.get('/', (req, res) => {
     res.sendFile('./index.html', {root: __dirname});
+});
+
+app.get('/postFood', (req, res) => {
+    res.sendFile('./postFood.html', { root: __dirname});
 });
 
 const port = process.env.PORT || 3000;

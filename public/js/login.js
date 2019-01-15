@@ -43,8 +43,9 @@ async function postLogin(url, data) {
 	return response;	
 }
 
+
 async function postData(url){
-	const response = await fetch(url, {
+	/*const response = */await fetch(url, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -52,7 +53,7 @@ async function postData(url){
 		}
 	});
 
-	return response;
+	//return response;
 }
 
 
@@ -61,13 +62,14 @@ async function postData(url){
  */
 async function isLoggedIn(){
 	//const token = localStorage.getItem('token');
-	
-	const response = await postData('http://localhost:3000/api/postFood');
+	postData('http://localhost:3000/api/postFood/redirect');
+	//const response = await postData('http://localhost:3000/api/postFood/redirect');
 
-	console.log(response);
+	/*console.log(response);
 	if(response.status === 200){
-		document.getElementById('isLoggedIn').innerHTML = true;	
-	}	
+		document.getElementById('isLoggedIn').innerHTML = true;
+		window.location.href = response.url;	
+	}*/	
 }
 
 

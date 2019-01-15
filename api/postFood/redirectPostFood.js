@@ -1,4 +1,5 @@
 const auth = require('../../middleware/auth');
+//const {isLoggedIn} = require('../../models/helpers/verifyToken');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const express = require('express');
@@ -21,13 +22,9 @@ router.post('/', auth, async (req, res) => {
             res.sendStatus(403);
         }
         else{
-            res.json({
-                message: 'Post the data....',
-                authData 
-            });
+            res.redirect('/postfood');
         }
     });
-    //res.send(_.pick(['email', '_id']));
 });
 
 module.exports = router;
