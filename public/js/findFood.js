@@ -1,24 +1,28 @@
-
+import {routes} from '../helpers/get.js'
 window.onload = initialize;
+
 
 function initialize() {
 	document.querySelector('#btnFind').addEventListener('click', sendRequest);
 }
 
+
 async function sendRequest(){
-    const response = await getFood('http://localhost:3000/api/findFood'); 
+    const response = await routes.getData('http://localhost:3000/api/findFood'); 
     
-    const data = await response.json();
-    console.log(data);
+	const data = await response.json();
+	
+	const printaAble = makeString(data);
+
+	document.getElementById('test').innerHTML = printaAble;
 }
 
-async function getFood(url){
-    const response = await fetch(url, {
-		method: "GET", 
-		headers: {
-			"Content-Type": "application/json",
-			//"Authorization": "Bearer " + localStorage.getItem('token')
-		},
-    });	
-	return response;
+function makeString(data){
+	var string = "";
+	for(let i = 0; i < data.length; i++){
+		string += data[i].name;
+		string += ", ";
+	}
+
+	return string;
 }

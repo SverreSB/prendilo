@@ -1,4 +1,4 @@
-import {routes} from '../helpers/post.js'
+import {routes} from '../helpers/post.js';
 
 window.onload = initialize;
 

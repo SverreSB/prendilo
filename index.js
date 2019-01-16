@@ -6,8 +6,8 @@ const login = require('./api/login/login');
 const postFood = require('./api/postFood/postFood');
 const findFood = require('./api/findFood/findFood');
 const account = require('./api/account/account');
-const redirectPF = require('./api/postFood/redirectPostFood');
-const redirectFF = require('./api/findFood/redirectFindFood');
+const redirectPf = require('./api/postFood/redirectPostFood');
+const redirectFf = require('./api/findFood/redirectFindFood');
 
 //Adding this to not get DeprecationWarning: collection.ensureIndex is deprecated. 
 mongoose.set('useCreateIndex', true);
@@ -37,8 +37,8 @@ app.use('/api/login', login);
 app.use('/api/postFood', postFood);
 app.use('/api/findFood', findFood);
 app.use('/api/account', account);
-app.use('/api/postFood/redirect', redirectPF);
-app.use('/api/findFood/redirect', redirectFF);
+app.use('/api/postFood/redirect', redirectPf);
+app.use('/api/findFood/redirect', redirectFf);
 app.use(function(err, req, res, next){
     res.status(500).send('Something went wrong');
 });
