@@ -6,8 +6,10 @@ function initialize() {
 }
 
 async function sendRequest(){
-    const response = await getFood('http://localhost:3000/api/findFood');   
-    console.log(response);
+    const response = await getFood('http://localhost:3000/api/findFood'); 
+    
+    const data = await response.json();
+    console.log(data);
 }
 
 async function getFood(url){

@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 router.get('/', async(req, res) => {
     const food = await Food.find().select('-_id').select('-__v');
     console.log(food);
-    res.send(food);
+    res.status(200).json(food);
 });
 
 

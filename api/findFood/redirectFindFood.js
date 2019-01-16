@@ -1,7 +1,3 @@
-const auth = require('../../middleware/auth');
-//const {isLoggedIn} = require('../../models/helpers/verifyToken');
-const jwt = require('jsonwebtoken');
-const config = require('config');
 const express = require('express');
 const _ = require('lodash');
 const bodyParser = require('body-parser');

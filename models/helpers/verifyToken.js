@@ -2,17 +2,15 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 
 function isLoggedIn(token){
-    jwt.verify(req.token, config.get('jwtPrivateKey'), (err, authData) => {
+    const authorization = jwt.verify(token, config.get('jwtPrivateKey'), (err) => {
         if(err){
-            res.sendStatus(403);
+            return false;
         }
         else{
-            res.json({
-                message: 'Post the data....',
-                authData 
-            });
+            return true;
         }
-    })
+    });
+    return authorization;
 }
 
 exports.isLoggedIn = isLoggedIn;

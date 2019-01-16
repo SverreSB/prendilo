@@ -1,7 +1,5 @@
 const auth = require('../../middleware/auth');
-//const {isLoggedIn} = require('../../models/helpers/verifyToken');
-const jwt = require('jsonwebtoken');
-const config = require('config');
+const {isLoggedIn} = require('../../models/helpers/verifyToken');
 const express = require('express');
 const _ = require('lodash');
 const bodyParser = require('body-parser');
@@ -17,14 +15,8 @@ app.use(bodyParser.json());
  *  Fetching user data for given ID if given token is correct for user asked after
  */
 router.post('/', auth, async (req, res) => {
-    jwt.verify(req.token, config.get('jwtPrivateKey'), (err, authData) => {
-        if(err){
-            res.sendStatus(403);
-        }
-        else{
-            res.redirect('/postfood');
-        }
-    });
+    if(!isLoggedIn(req.token)) return res.sendStatus(403);
+    else return res.redirect('/postfood');
 });
 
 module.exports = router;
