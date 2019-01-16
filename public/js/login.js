@@ -3,8 +3,9 @@ window.onload = initialize;
 function initialize() {
     // get button
 	document.querySelector('#btnLogin').addEventListener('click', login);
-	document.querySelector('#btnConfirmation').addEventListener('click', isLoggedIn);
+	document.querySelector('#btnPost').addEventListener('click', redirectPost);
 	document.querySelector('#btnLogout').addEventListener('click', logout);
+	document.querySelector('#btnFind').addEventListener('click', redirectFind)
 }
 
 
@@ -60,11 +61,19 @@ async function postData(url){
 /**
  * 	Test function to see if user is logged in
  */
-async function isLoggedIn(){
+async function redirectPost(){
 	const response = await postData('http://localhost:3000/api/postFood/redirect');
 	
 	if(response.status === 200){
 		window.location.href = response.url;	
+	}
+}
+
+async function redirectFind(){
+	const response = await postData('http://localhost:3000/api/findFood/redirect');
+	console.log(response);
+	if(response.status === 200){
+		window.location.href = response.url;
 	}
 }
 

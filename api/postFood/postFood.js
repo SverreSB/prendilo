@@ -12,11 +12,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
-router.post('/', asyncMiddleware(async(req, res) => {
+router.post('/', auth, asyncMiddleware(async(req, res) => {
     const food = new Food(_.pick(req.body, ['name', 'type']));
     food.save();
     res.send(_.pick(food, ['_id']));
-
 }));
 
 
