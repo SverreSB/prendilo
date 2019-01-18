@@ -32,7 +32,7 @@ function initialize() {
 function login() {
 	const input = Array.from(document.querySelectorAll('input'));
 	const email = input[0].value;
-	const password = input[1].value; 
+	const password = input[1].value;
 
 	routes.postLogin('http://localhost:3000/api/login', { email, password})
   		.then(data => console.log(JSON.stringify(data)))

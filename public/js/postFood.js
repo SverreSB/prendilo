@@ -31,10 +31,14 @@ function sendRequest(){
 
     const name = values[0].value;
     const type = values[1].value;
+    /*const lat = values[2].value;
+    const long = values[3].value;*/
 
     routes.postData('http://localhost:3000/api/postFood', {
         name,
         type
+        /*lat,
+        long*/
     });
 }
 

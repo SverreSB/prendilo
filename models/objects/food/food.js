@@ -24,6 +24,18 @@ const schema = new mongoose.Schema({
     },
     postedBy: {
         type: String
+    }, 
+    postedBy: {
+        type: String,
+        require: true
+    },
+    lat: {
+        type: Number,
+        required: true
+    },
+    long: {
+        type: Number,
+        required: true
     }
 });
 

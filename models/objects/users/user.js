@@ -42,6 +42,14 @@ const schema = new mongoose.Schema({
         type: String,
         minlength: 4,
         maxlength: 128
+    },
+    lat: {
+        type: Number,
+        required: true
+    },
+    long: {
+        type: Number,
+        required: true
     }
 });
 
@@ -69,7 +77,9 @@ function validateSignup(body){
         name: Joi.string().min(2).max(16).required(),
         phone: Joi.number().min(1111).max(99999999999).required(),
         email: Joi.string().min(4).max(64).required(),
-        password: Joi.string().min(4).max(128).required()
+        password: Joi.string().min(4).max(128).required(),
+        lat: Joi.number().required(),
+        long: Joi.number().required(),
     }
 
     var validation = Joi.validate(body, schema);

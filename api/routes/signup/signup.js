@@ -24,15 +24,16 @@ const {User, validateSignup} = require('../../../models/objects/users/user');
         The password is salted and hashed before being stored in db
  */
 router.post('/', async(req, res) => {
+    
     var validateInput = validateSignup(req.body);
-
+    console.log(validateInput);
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
     
     let user = await User.findOne({email: req.body.email});
     if(user) return res.status(400).send('User is already registered');
     
-    user = new User(_.pick(req.body, ['name', 'phone', 'email', 'password']));
-
+    user = new User(_.pick(req.body, ['name', 'phone', 'email', 'password', 'lat', 'long']));
+    
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
 
