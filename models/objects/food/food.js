@@ -1,3 +1,12 @@
+/******************************
+
+
+    File containing the food object.
+
+        
+ ******************************/
+
+
 const mongoose = require('mongoose');
 
 const schema = new mongoose.Schema({
@@ -12,9 +21,15 @@ const schema = new mongoose.Schema({
         min: 2,
         max: 12,
         require: true
+    },
+    postedBy: {
+        type: String
     }
 });
 
+
 const Food = mongoose.model('Food', schema);
 
+
 exports.Food = Food;
+exports.foodSchema = schema;

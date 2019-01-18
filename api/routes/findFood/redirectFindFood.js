@@ -1,3 +1,13 @@
+/******************************
+ 
+
+    Route handler for api/redirectFindFood. 
+    Redirects user to /findFood.
+ 
+
+ ******************************/
+
+
 const express = require('express');
 const _ = require('lodash');
 const bodyParser = require('body-parser');

@@ -1,8 +1,19 @@
+/******************************
+ 
+
+    Route handler for api/signup
+    Includes: 
+        - Post, to create a user and store in database.
+ 
+
+ ******************************/
+
+
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
-const {User, validateSignup} = require('../../models/objects/users/user');
+const {User, validateSignup} = require('../../../models/objects/users/user');
 
 
 /**

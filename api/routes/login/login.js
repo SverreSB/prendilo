@@ -1,5 +1,16 @@
-const asyncMiddleware= require('../../middleware/async');
-const {User, validateLogin} = require('../../models/objects/users/user');
+/******************************
+ 
+
+    Route handler for api/login
+    Includes: 
+        - Post, to validate passed values to check if it matches with a user.
+ 
+
+ ******************************/
+
+
+const asyncMiddleware= require('../../../middleware/async');
+const {User, validateLogin} = require('../../../models/objects/users/user');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 var bodyParser= require('body-parser');
@@ -9,6 +20,7 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 
 /**
  *  Post request for login into a user

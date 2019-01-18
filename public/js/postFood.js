@@ -1,12 +1,31 @@
+/******************************
+
+
+    File for postFood.html
+    This file contains functions that handles the user interaction
+    with the route for posting food.
+
+
+ ******************************/
+
+
 import {routes} from '../helpers/post.js';
 
+
 window.onload = initialize;
+
 
 function initialize() {
 	document.querySelector('#btnPost').addEventListener('click', sendRequest);
 }
 
 
+/**
+ *  Function for sending a request to api/postFood. 
+        Calling getValues to fetch and return the user inputs.
+        Using function from ../helpers/routes to post the data.
+        Passing url and values found in input fields.
+ */
 function sendRequest(){
     const values = getValues();
 
@@ -20,6 +39,9 @@ function sendRequest(){
 }
 
 
+/**
+ *  Gets values from input fields and returns the values to caller.
+ */
 function getValues(){
     const input = Array.from(document.querySelectorAll('input'));
     return input;

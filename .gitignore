@@ -1,4 +1,3 @@
 node_modules/
-models/helpers/encrypt.js/
-api/account/
+api/routes/account/
 config/

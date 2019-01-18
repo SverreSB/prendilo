@@ -1,17 +1,10 @@
-const mongoose = require('mongoose');
 const config = require('config');
 const express = require('express');
-const signup = require('./api/signup/signup');
-const login = require('./api/login/login');
-const postFood = require('./api/postFood/postFood');
-const findFood = require('./api/findFood/findFood');
-const account = require('./api/account/account');
-const redirectPf = require('./api/postFood/redirectPostFood');
-const redirectFf = require('./api/findFood/redirectFindFood');
 
-//Adding this to not get DeprecationWarning: collection.ensureIndex is deprecated. 
-mongoose.set('useCreateIndex', true);
+
 app = express();
+require('./startup/routes')(app);
+require('./startup/db')();
 
 
 /**
@@ -23,22 +16,6 @@ if(!config.get('jwtPrivateKey')){
 }
 
 
-/**
- *  Throws error if not connected to mongoDB
- */
-mongoose.connect("mongodb://localhost:27017/giveaway", { useNewUrlParser: true })
-    .then( () => console.log('Connected to givaway database'))
-    .catch(err => console.log('Could not connect to database', err));
-
-
-app.use(express.json());
-app.use('/api/signup', signup);
-app.use('/api/login', login);
-app.use('/api/postFood', postFood);
-app.use('/api/findFood', findFood);
-app.use('/api/account', account);
-app.use('/api/postFood/redirect', redirectPf);
-app.use('/api/findFood/redirect', redirectFf);
 app.use(function(err, req, res, next){
     res.status(500).send('Something went wrong');
 });

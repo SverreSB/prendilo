@@ -1,10 +1,23 @@
+/******************************
+
+
+	Helper file for post requests through api's
+
+
+ ******************************/
+
+
 export const routes = {
 	postData,
 	postLogin,
 	postUrl
 }
+
+
 /**
  * 	Function for posting data through an api
+		Passing jw-token in header.
+
  * 	@param {String} url 
  * 	@param {json} data 
  */
@@ -22,7 +35,10 @@ async function postData(url, data) {
 
 
 /**
- * 	Function for posting data through an api
+ * 	Function for posting data through an api to log user into account
+		Takes the response and creates a json.
+		Then takes the token from the json and store it in local storrage as token
+
  * 	@param {String} url 
  * 	@param {json} data 
  */
@@ -42,6 +58,13 @@ async function postLogin(url, data) {
 	return response;	
 }
 
+
+/**
+ * 	Functiong for post request without passing data
+		Function is used for redirecting when authorization is neccesary
+
+ * 	@param {String} url 
+ */
 async function postUrl(url){
 	const response = await fetch(url, {
 		method: "POST",

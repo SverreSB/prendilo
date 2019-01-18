@@ -1,3 +1,15 @@
+/******************************
+
+
+    File containing the user object.
+    Containing functions for:
+        - Validating that the values passed in to create a user is correct
+        - Validating that login values meets a certain criteria. 
+
+
+ ******************************/
+
+
 const mongoose = require('mongoose');
 const Joi = require('joi');
 const config = require('config');
@@ -21,14 +33,14 @@ const schema = new mongoose.Schema({
     },
     email: {
         type: String,
-        min: 6,
+        min: 4,
         max: 64,
         required: true,
         unique: true
     },
     password: {
         type: String,
-        minlength: 8,
+        minlength: 4,
         maxlength: 128
     }
 });
@@ -44,6 +56,7 @@ schema.methods.generateJwt = function(){
     return token;
 }
 
+
 const User = mongoose.model('User', schema);
 
 
@@ -55,8 +68,8 @@ function validateSignup(body){
     const schema = {
         name: Joi.string().min(2).max(16).required(),
         phone: Joi.number().min(1111).max(99999999999).required(),
-        email: Joi.string().min(6).max(64).required(),
-        password: Joi.string().min(8).max(128).required()
+        email: Joi.string().min(4).max(64).required(),
+        password: Joi.string().min(4).max(128).required()
     }
 
     var validation = Joi.validate(body, schema);
@@ -72,8 +85,8 @@ function validateSignup(body){
  */
 function validateLogin(body){
     const schema = {
-        email: Joi.string().min(6).max(64).required(),
-        password: Joi.string().min(8).required()
+        email: Joi.string().min(4).max(64).required(),
+        password: Joi.string().min(4).required()
     };
 
     const validation = Joi.validate(body, schema);

@@ -1,11 +1,13 @@
 /******************************
  
 
-    Helper file containing functions for
-    cryptating files that are beeing sent to the database
+    Helper file containing functions for hashing and salting 
+    files that are beeing sent to the database
  
 
  ******************************/
+
+
 const bcrypt = require('bcrypt');
 
 
@@ -19,6 +21,7 @@ const bcrypt = require('bcrypt');
     return salt;
  }
 
+
  /**
   *   Function for hashing salted password
          Using bcrypt hash to hash salted password.
@@ -28,6 +31,7 @@ const bcrypt = require('bcrypt');
 
    return hashed;
  }
+
 
  exports.salt = salt;
  exports.hash = hash;
