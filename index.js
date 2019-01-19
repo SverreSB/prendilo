@@ -36,6 +36,9 @@ app.get('/findfood', (req, res) => {
     res.sendFile('./html/findFood.html', { root: __dirname});
 });
 
+app.get('/myAccount', (req, res) => {
+    res.sendFile('./html/myAccount.html', { root: __dirname});
+});
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening to port ${port}`));

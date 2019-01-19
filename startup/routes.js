@@ -15,6 +15,7 @@ const findFood = require('../api/routes/findFood/findFood');
 const account = require('../api/routes/account/account');
 const redirectPf = require('../api/routes/postFood/redirectPostFood');
 const redirectFf = require('../api/routes/findFood/redirectFindFood');
+const redirectAcc = require('../api/routes/account/redirectAccount');
 
 
 module.exports = function(app){
@@ -26,4 +27,5 @@ module.exports = function(app){
     app.use('/api/account', account);
     app.use('/api/postFood/redirect', redirectPf);
     app.use('/api/findFood/redirect', redirectFf);
+    app.use('/api/account/redirect', redirectAcc);
 }

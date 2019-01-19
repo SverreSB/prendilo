@@ -1,3 +1,12 @@
+/******************************
+
+
+    Helper file for finding distance between user and food
+
+
+ ******************************/
+
+
 export const distance = {
     getDistance
 }
@@ -10,7 +19,7 @@ export const distance = {
  *  @param {number} lon 
  */
 function getDistance(lat1,lon1,lat2,lon2) {
-	const R = 6371; // Radius of the earth in km
+	const R = 6371; //Radius of earth in km
 	
     const dLat = deg2rad(lat2-lat1);  
 	const dLon = deg2rad(lon2-lon1); 
@@ -26,9 +35,10 @@ function getDistance(lat1,lon1,lat2,lon2) {
     return d;
 }
 
+
 /**
  *  Helper function for getDistance
-        Calculates the radius from degrees given.
+        Calculates the radian from degrees given.
  *  @param {number} deg 
  */
 function deg2rad(deg) {

@@ -20,7 +20,8 @@ function initialize() {
 	document.querySelector('#btnLogin').addEventListener('click', login);
 	document.querySelector('#btnPost').addEventListener('click', post);
 	document.querySelector('#btnLogout').addEventListener('click', logout);
-	document.querySelector('#btnFind').addEventListener('click', find)
+	document.querySelector('#btnFind').addEventListener('click', find);
+	document.querySelector('#btnAccount').addEventListener('click', account);
 }
 
 
@@ -58,4 +59,8 @@ function post(){
 
 function find(){
 	redirect.redir('api/findFood/redirect');
+}
+
+function account(){
+	redirect.redir('api/account/redirect');
 }
