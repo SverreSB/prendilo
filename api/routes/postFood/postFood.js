@@ -14,10 +14,37 @@ const {User} = require('../../../models/objects/users/user');
 const auth = require('../../../middleware/auth');
 const asyncMiddleware = require('../../../middleware/async');
 const express = require('express');
+const multer = require('multer');
 const _ = require('lodash');
 const bodyParser = require('body-parser');
 const router = express.Router();
 const app = express();
+
+
+const storage = multer.diskStorage({
+    destination: function(req, file, cb){
+        cb(null, './upload/');
+    },
+    filename: function(req, file, cb){
+        cb(null, new Date().toISOString() + file.originalname);
+    }
+});
+
+
+const fileFilter = (req, file, cb) => {
+    if(file.originalname.match(/\.(jpg|jpeg|png)$/)) cb(null, true);
+    else cb(null, false);
+}
+
+const fileSize = 1024 * 1024 * 5; //5Mb
+
+const upload = multer({
+    storage,
+    limits:{
+        fileSize 
+    },
+    fileFilter 
+});
 
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -29,7 +56,8 @@ app.use(bodyParser.json());
         Takes the data that is passed in the request
         and creates a food object that is being stored in the database.     
  */
-router.post('/', auth, asyncMiddleware(async(req, res) => {
+router.post('/', auth, upload.single('foodImage'), asyncMiddleware(async(req, res) => {
+    console.log(req.file);
     const user = await User.findById(req.user._id);
     
     req.body.postedBy = req.user._id;
