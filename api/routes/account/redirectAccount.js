@@ -20,10 +20,11 @@ app.use(bodyParser.json());
 
 
 /**
- *  Fetching user data for given ID if given token is correct for user asked after
+ *  Redirects to myAccount
  */
 router.post('/', auth, async (req, res) => {
     res.redirect('/myAccount');
 });
+
 
 module.exports = router;

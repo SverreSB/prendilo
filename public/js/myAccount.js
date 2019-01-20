@@ -18,18 +18,39 @@ window.onload = initialize;
 
 function initialize() {
 
-    sendRequest();
+    loadUser();
+    document.querySelector('#btnFood').addEventListener('click', myFood);
+    
 
 }
 
-async function sendRequest(){
+
+/**
+ *  Finding username and email to dispaly when going to my account
+ */
+async function loadUser(){
     const response = await routes.getData('http://localhost:3000/api/account'); 
     const data = await response.json();
     
-    const username = document.createElement('h5');
-    const email = document.createElement('p');
+    const username = document.createElement('h3');
+    const info = document.createElement('p');
     username.innerHTML = `${data.name}`;
-    email.innerHTML = `${data.email}`;	
+    info.innerHTML = `Email: ${data.email} <br>
+                    Phone: ${data.phone} `;	
     document.body.appendChild(username);
-    document.body.appendChild(email);
+    document.body.appendChild(info);
+}
+
+async function myFood(){
+    const response = await routes.getData('http://localhost:3000/api/account/food'); 
+    const data = await response.json();
+    
+    const foodTag = document.createElement('p');
+    data.forEach(food => {
+        foodTag.innerHTML = `${food.name}`
+        
+    }) 
+    document.body.appendChild(foodTag);
+    
+
 }
