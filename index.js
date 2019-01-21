@@ -7,6 +7,7 @@ require('./startup/routes')(app);
 require('./startup/db')();
 
 
+
 /**
  *  Throws error if jwtPrivateKey is not defined.
  */
@@ -20,6 +21,7 @@ app.use(function(err, req, res, next){
     res.status(500).send('Something went wrong');
 });
 app.use(express.static(__dirname + '/public'));
+app.use('/upload', express.static('upload'));
 
 
 app.get('/', (req, res) => {

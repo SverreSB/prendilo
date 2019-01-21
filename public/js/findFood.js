@@ -47,9 +47,11 @@ async function sendRequest(){
  */
 function createFoodList(data){
 	const food = data[0];
+	console.log(food);
 	const user = data[1];
 	food.forEach(food => {
 		const foodName = document.createElement('h5');
+		const img = document.createElement('img');
 		//Making the text clickable.
 		/*foodName.addEventListener('click', () => {
 			window.location.href = `/foods/${food._id}`;
@@ -57,7 +59,11 @@ function createFoodList(data){
 		const dist = distance.getDistance(food.lat, food.long, user.lat, user.long);
 		if(dist <= 5){
 			foodName.innerHTML = `${food.name}. Less than ${dist} km`;
+			img.src = food.foodImage;
+			img.alt = food.name;
+			img.className = 'food-image';
 			document.body.appendChild(foodName);
+			document.body.appendChild(img);
 		}
 		
 	});

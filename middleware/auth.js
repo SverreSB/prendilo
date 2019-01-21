@@ -28,9 +28,7 @@ module.exports = function (req, res, next) {
             req.token = bearerToken;
             req.user = decoded;
             next()
-        }catch(ex){
-            res.status(403).send('Forbidden');
-        }
+        }catch(err) { res.status(403).send('Forbidden') } 
     }
     else{
         res.status(403).send('Forbidden');

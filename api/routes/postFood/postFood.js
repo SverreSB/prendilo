@@ -57,14 +57,16 @@ app.use(bodyParser.json());
         and creates a food object that is being stored in the database.     
  */
 router.post('/', auth, upload.single('foodImage'), asyncMiddleware(async(req, res) => {
-    console.log(req.file);
+    
     const user = await User.findById(req.user._id);
     
     req.body.postedBy = req.user._id;
     req.body.lat = user.lat;
     req.body.long = user.long;
+    req.body.foodImage = req.file.path
     
-    const food = new Food(_.pick(req.body, ['name', 'type', 'postedBy', 'lat', 'long']));
+    
+    const food = new Food(_.pick(req.body, ['name', 'type', 'postedBy', 'lat', 'long', 'foodImage']));
     food.save();
     res.send(_.pick(food, ['_id']));
 }));

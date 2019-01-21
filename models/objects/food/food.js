@@ -36,6 +36,10 @@ const schema = new mongoose.Schema({
     long: {
         type: Number,
         required: true
+    },
+    foodImage: {
+        type: String,
+        required: true
     }
 });
 

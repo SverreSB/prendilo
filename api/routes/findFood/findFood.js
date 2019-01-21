@@ -29,18 +29,8 @@ app.use(bodyParser.json());
 router.get('/', auth, async(req, res) => {
     const food = await Food.find().select('-_id').select('-__v');
 
-    const user = await User.findById(req.user)
-                .select('-_id')
-                .select('-name')
-                .select('-email')
-                .select('-phone')
-                .select('-password')
-                .select('-__v');
-	
-	/*food.forEach(food => {
-		const distance = getDistanceFromLatLonInKm(user.lat, user.long, food.lat, food.long);
-		console.log(distance);
-    });*/
+    const user = await User.findById(req.user).select('lat long')
+    
     const data = [food, user];
 
     res.status(200).json(data);
