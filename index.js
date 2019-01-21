@@ -17,9 +17,9 @@ if(!config.get('jwtPrivateKey')){
 }
 
 
-app.use(function(err, req, res, next){
+/*app.use(function(err, req, res, next){
     res.status(500).send('Something went wrong');
-});
+});*/
 app.use(express.static(__dirname + '/public'));
 app.use('/upload', express.static('upload'));
 
