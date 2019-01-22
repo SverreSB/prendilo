@@ -26,7 +26,7 @@ const {User, validateSignup} = require('../../../models/objects/users/user');
 router.post('/', async(req, res) => {
     
     var validateInput = validateSignup(req.body);
-    console.log(validateInput);
+    
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
     
     let user = await User.findOne({email: req.body.email});

@@ -8,6 +8,7 @@
 
 
 const mongoose = require('mongoose');
+const Joi = require('joi');
 
 const schema = new mongoose.Schema({
     name: {
@@ -22,9 +23,6 @@ const schema = new mongoose.Schema({
         max: 12,
         require: true
     },
-    postedBy: {
-        type: String
-    }, 
     postedBy: {
         type: String,
         require: true
@@ -47,5 +45,17 @@ const schema = new mongoose.Schema({
 const Food = mongoose.model('Food', schema);
 
 
+function validate(body) {
+    const schema = {
+        name: Joi.string().min(2).max(32).required(),
+        type: Joi.string().min(2).max(12).required()
+    }
+
+    const validation = Joi.validate(body, schema);
+
+    return validation;
+}
+
 exports.Food = Food;
 exports.foodSchema = schema;
+exports.validateUpdate = validate;
