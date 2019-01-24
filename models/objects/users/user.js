@@ -82,10 +82,20 @@ function validateSignup(body){
         long: Joi.number().required(),
     }
 
-    var validation = Joi.validate(body, schema);
+    const validation = Joi.validate(body, schema);
 
     return validation;
 
+}
+
+function validatePassword(body){
+    const schema = {
+        password: Joi.string().min(4).max(128).required()
+    }
+
+    const validation = Joi.validate(body, schema);
+
+    return validation;
 }
 
 
@@ -110,3 +120,4 @@ exports.User = User;
 exports.userSchema = schema;
 exports.validateSignup = validateSignup;
 exports.validateLogin = validateLogin;
+exports.validatePassword = validatePassword;
