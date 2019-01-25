@@ -30,11 +30,11 @@ router.post('/password', auth, asyncMiddleware(async(req,res) => {
     const validation = validatePassword(req.body);
     if(validation.error) return res.status(400).send(validation.error.details[0].message);
 
-    if(req.body.new_password != req.body.confirm_password){
-        return res.status(400).send('New password and confirm password is not matching');
+    if((req.body.new_password != req.body.confirm_password) || req.body.new_password === req.body.old_password){
+        return res.status(400).send('Passwords cannot match old password. Confirm and new password must match');
     }
 
-    const validOldPw = bcryptCompare(req.body.old_password, user.password);
+    const validOldPw = await bcryptCompare(req.body.old_password, user.password);
     if(!validOldPw) return res.status(400).send('Mismatch password');
 
     const salt = await bcrypt.genSalt(10);
