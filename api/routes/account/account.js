@@ -24,18 +24,22 @@ router.get('/food', auth, asyncMiddleware( async (req, res) => {
 
 
 router.post('/password', auth, asyncMiddleware(async(req,res) => {
+    const user = await User.findById(req.user._id);
     const validation = validatePassword(req.body);
-    if(validation.error) return res.status(400).send('Input invalid. Please try and chenge the password again');
+    if(validation.error) return res.status(400).send('Input invalid. Please try and change the password again');
+    
+    const legitOld = await bcrypt.compare(req.body.old_password, user.password);
+    if(!legitOld) return res.status(400).send('Mismatch password');
 
     const salt = await bcrypt.genSalt(10);
-    req.body.password = await bcrypt.hash(req.body.password, salt);
+    req.body.new_password = await bcrypt.hash(req.body.new_password, salt);
     
-    const user = await User.findByIdAndUpdate(req.user._id, {
+    const updateUser = await User.findByIdAndUpdate(req.user._id, {
         password: req.body.password
     });
-    if(!user) return res.status(400).send('Could not find user');
+    if(!updateUser) return res.status(400).send('Could not find user');
 
-    res.send(user);
+    res.send(updateUser);
 }));
 
 
