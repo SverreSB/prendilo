@@ -91,7 +91,8 @@ function validateSignup(body){
 function validatePassword(body){
     const schema = {
         old_password: Joi.string().min(4).max(128).required(),
-        new_password: Joi.string().min(4).max(128).required()
+        new_password: Joi.string().min(4).max(128).required(),
+        confirm_password: Joi.string().min(4).max(128).required()
     }
 
     const validation = Joi.validate(body, schema);

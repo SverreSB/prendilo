@@ -6,6 +6,7 @@ const router = express.Router();
 const auth = require('../../../middleware/auth');
 const {User, validatePassword} = require('../../../models/objects/users/user');
 const {Food} = require('../../../models/objects/food/food');
+const {bcryptCompare} = require('../../../models/helpers/comparePw');
 
 
 /**
@@ -25,17 +26,22 @@ router.get('/food', auth, asyncMiddleware( async (req, res) => {
 
 router.post('/password', auth, asyncMiddleware(async(req,res) => {
     const user = await User.findById(req.user._id);
+
     const validation = validatePassword(req.body);
-    if(validation.error) return res.status(400).send('Input invalid. Please try and change the password again');
-    
-    const legitOld = await bcrypt.compare(req.body.old_password, user.password);
-    if(!legitOld) return res.status(400).send('Mismatch password');
+    if(validation.error) return res.status(400).send(validation.error.details[0].message);
+
+    if(req.body.new_password != req.body.confirm_password){
+        return res.status(400).send('New password and confirm password is not matching');
+    }
+
+    const validOldPw = bcryptCompare(req.body.old_password, user.password);
+    if(!validOldPw) return res.status(400).send('Mismatch password');
 
     const salt = await bcrypt.genSalt(10);
     req.body.new_password = await bcrypt.hash(req.body.new_password, salt);
     
     const updateUser = await User.findByIdAndUpdate(req.user._id, {
-        password: req.body.password
+        password: req.body.new_password
     });
     if(!updateUser) return res.status(400).send('Could not find user');
 
