@@ -37,7 +37,7 @@ router.post('/', asyncMiddleware(async(req, res) => {
     if(!user) return res.status(400).send('Invalid username or password');
     
     const validPassword = await bcryptCompare(req.body.password, user.password);
-    console.log(validPassword);
+    
     if(!validPassword || !user) return res.status(400).send('Invalid username or password');
 
     const token = user.generateJwt();

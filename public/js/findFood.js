@@ -47,8 +47,13 @@ async function sendRequest(){
  */
 function createFoodList(data){
 	const food = data[0];
-	console.log(food);
 	const user = data[1];
+	var location;
+	if(navigator.geolocation){
+		navigator.geolocation.getCurrentPosition(showPosition, locationNotReceived, {timeout:3});
+		console.log(navigator.geolocation.watchPosition(showPosition, locationNotReceived));
+		
+	}
 	food.forEach(food => {
 		const foodName = document.createElement('h5');
 		const img = document.createElement('img');
@@ -67,4 +72,25 @@ function createFoodList(data){
 		}
 		
 	});
+}
+
+
+/*function getLocation(){
+	if(navigator.geolocation){
+		const position = navigator.geolocation.getCurrentPosition(showPosition, locationNotReceived, {timeout:5});
+		return position;
+	}
+	else[
+		console.log("Geolocation not supported")
+	]
+}*/
+
+
+function showPosition(position){
+	console.log(position);
+}
+
+
+function locationNotReceived(error){
+	console.log(error);
 }

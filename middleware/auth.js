@@ -22,7 +22,6 @@ module.exports = function (req, res, next) {
     if(bearerHeader){
         const bearer = bearerHeader.split(' ');
         const bearerToken = bearer[1];
-        
         try{
             const decoded = jwt.verify(bearerToken, config.get('jwtPrivateKey'));
             req.token = bearerToken;
