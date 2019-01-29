@@ -29,11 +29,7 @@ app.use(bodyParser.json());
 router.get('/', auth, async(req, res) => {
     const food = await Food.find().select('-_id').select('-__v');
 
-    const user = await User.findById(req.user).select('lat long')
-    
-    const data = [food, user];
-
-    res.status(200).json(data);
+    res.status(200).json(food);
 });
 
 

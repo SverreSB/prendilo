@@ -15,9 +15,12 @@ import {distance} from '../helpers/distance.js';
 
 window.onload = initialize;
 
+var userCoords = { lat: '', long: '' };
 
 function initialize() {
+	getLocation();
 	document.querySelector('#btnFind').addEventListener('click', sendRequest);
+	
 }
 
 
@@ -27,7 +30,7 @@ function initialize() {
 		Then uses the response to get the data from the json file that is beeing returned.
 		Passes the data to print out every food
  */
-async function sendRequest(){
+async function sendRequest() {
     const response = await routes.getData('http://localhost:3000/api/findFood'); 
 	const data = await response.json();
 
@@ -45,15 +48,9 @@ async function sendRequest(){
  * 	Github: https://github.com/sanderhelleso
  * 	@param {String} data 
  */
-function createFoodList(data){
-	const food = data[0];
-	const user = data[1];
-	var location;
-	if(navigator.geolocation){
-		navigator.geolocation.getCurrentPosition(showPosition, locationNotReceived, {timeout:3});
-		console.log(navigator.geolocation.watchPosition(showPosition, locationNotReceived));
-		
-	}
+function createFoodList(food) {
+	
+
 	food.forEach(food => {
 		const foodName = document.createElement('h5');
 		const img = document.createElement('img');
@@ -61,7 +58,8 @@ function createFoodList(data){
 		/*foodName.addEventListener('click', () => {
 			window.location.href = `/foods/${food._id}`;
 		});*/
-		const dist = distance.getDistance(food.lat, food.long, user.lat, user.long);
+		const dist = distance.getDistance(food.lat, food.long, userCoords.lat, userCoords.long);
+		console.log(dist);
 		if(dist <= 5){
 			foodName.innerHTML = `${food.name}. Less than ${dist} km`;
 			img.src = food.foodImage;
@@ -74,23 +72,15 @@ function createFoodList(data){
 	});
 }
 
-
-/*function getLocation(){
+//Function for getting location from browser. This is called when html for findFood is loaded
+function getLocation() {
 	if(navigator.geolocation){
-		const position = navigator.geolocation.getCurrentPosition(showPosition, locationNotReceived, {timeout:5});
-		return position;
+		navigator.geolocation.getCurrentPosition(function(position){
+			userCoords.lat = position.coords.latitude;
+			userCoords.long = position.coords.longitude;
+		});	
 	}
 	else[
 		console.log("Geolocation not supported")
 	]
-}*/
-
-
-function showPosition(position){
-	console.log(position);
-}
-
-
-function locationNotReceived(error){
-	console.log(error);
 }

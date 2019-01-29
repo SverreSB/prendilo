@@ -19,7 +19,7 @@ const jwt = require('jsonwebtoken');
 const schema = new mongoose.Schema({
     name: {
         type: String,
-        minlength: 4,
+        minlength: 3,
         maxlength: 16,
         required: true
     },
@@ -74,7 +74,7 @@ const User = mongoose.model('User', schema);
  */
 function validateSignup(body){
     const schema = {
-        name: Joi.string().min(2).max(16).required(),
+        name: Joi.string().min(3).max(16).required(),
         phone: Joi.number().min(1111).max(99999999999).required(),
         email: Joi.string().min(4).max(64).required(),
         password: Joi.string().min(4).max(128).required(),

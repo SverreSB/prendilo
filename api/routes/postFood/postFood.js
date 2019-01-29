@@ -65,7 +65,6 @@ router.post('/', auth, upload.single('foodImage'), asyncMiddleware(async(req, re
     req.body.long = user.long;
     req.body.foodImage = req.file.path
     
-    
     const food = new Food(_.pick(req.body, ['name', 'type', 'postedBy', 'lat', 'long', 'foodImage']));
     food.save();
     res.send(_.pick(food, ['_id']));
