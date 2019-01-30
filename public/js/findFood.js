@@ -19,8 +19,8 @@ var userCoords = { lat: '', long: '' };
 
 function initialize() {
 	getLocation();
-	document.querySelector('#btnFind').addEventListener('click', sendRequest);
 	
+	document.querySelector('#btnFind').addEventListener('click', sendRequest);
 }
 
 
@@ -31,10 +31,17 @@ function initialize() {
 		Passes the data to print out every food
  */
 async function sendRequest() {
-    const response = await routes.getData('http://localhost:3000/api/findFood'); 
-	const data = await response.json();
+	if(userCoords.long != '' && userCoords.lat != ''){
+		const stringCoord = JSON.stringify(userCoords);
+		localStorage.setItem("Location", stringCoord);
+		const response = await routes.getData('http://localhost:3000/api/findFood'); 
+		const data = await response.json();
+	
+		createFoodList(data);
+	}else{
+		console.log('Waiting for location');
+	}
 
-	createFoodList(data);
 }
 
 
@@ -59,7 +66,6 @@ function createFoodList(food) {
 			window.location.href = `/foods/${food._id}`;
 		});*/
 		const dist = distance.getDistance(food.lat, food.long, userCoords.lat, userCoords.long);
-		console.log(dist);
 		if(dist <= 5){
 			foodName.innerHTML = `${food.name}. Less than ${dist} km`;
 			img.src = food.foodImage;
@@ -84,3 +90,5 @@ function getLocation() {
 		console.log("Geolocation not supported")
 	]
 }
+
+
