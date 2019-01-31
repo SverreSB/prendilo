@@ -11,6 +11,7 @@
 
 import {routes} from '../helpers/get.js'
 import {distance} from '../helpers/distance.js';
+import {location} from '../helpers/location.js';
 
 
 window.onload = initialize;
@@ -18,7 +19,7 @@ window.onload = initialize;
 var userCoords = { lat: '', long: '' };
 
 function initialize() {
-	getLocation();
+	location.getLocation(userCoords);
 	
 	document.querySelector('#btnFind').addEventListener('click', sendRequest);
 }
@@ -56,8 +57,6 @@ async function sendRequest() {
  * 	@param {String} data 
  */
 function createFoodList(food) {
-	
-
 	food.forEach(food => {
 		const foodName = document.createElement('h5');
 		const img = document.createElement('img');
@@ -78,17 +77,5 @@ function createFoodList(food) {
 	});
 }
 
-//Function for getting location from browser. This is called when html for findFood is loaded
-function getLocation() {
-	if(navigator.geolocation){
-		navigator.geolocation.getCurrentPosition(function(position){
-			userCoords.lat = position.coords.latitude;
-			userCoords.long = position.coords.longitude;
-		});	
-	}
-	else[
-		console.log("Geolocation not supported")
-	]
-}
 
 
