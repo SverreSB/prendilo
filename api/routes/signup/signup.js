@@ -25,14 +25,18 @@ const {User, validateSignup} = require('../../../models/objects/users/user');
  */
 router.post('/', async(req, res) => {
     
+    req.body.lat = generateLat();
+    req.body.long = generateLong();
+    req.body.foodStamp = 5;
     var validateInput = validateSignup(req.body);
     
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
-    
+    console.log("Got through that");
     let user = await User.findOne({email: req.body.email});
     if(user) return res.status(400).send('User is already registered');
+ 
     
-    user = new User(_.pick(req.body, ['name', 'phone', 'email', 'password', 'lat', 'long']));
+    user = new User(_.pick(req.body, ['name', 'phone', 'email', 'password', 'lat', 'long', 'foodStamp']));
   
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
@@ -43,3 +47,15 @@ router.post('/', async(req, res) => {
 
 
 module.exports = router;
+
+function generateLat(){
+    const min = 36.627208;
+    const max = 36.666207;
+    return (Math.random() * (max - min) + min).toFixed(6); 
+}
+
+function generateLong(){
+    const min = -121.751907;
+    const max = -121.816795;
+    return (Math.random() * (max - min) + min).toFixed(6); 
+}
