@@ -57,7 +57,8 @@ const schema = new mongoose.Schema({
         required: true
     },
     earnedStamps: {
-        type: Number
+        type: Number,
+        required: true
     }
 });
 
@@ -88,7 +89,8 @@ function validateSignup(body){
         password: Joi.string().min(4).max(128).required(),
         lat: Joi.number().required(),
         long: Joi.number().required(),
-        foodStamp: Joi.number().max(5).required()
+        foodStamp: Joi.number().max(5).required(),
+        earnedStamps: Joi.number().required()
     }
 
     const validation = Joi.validate(body, schema);

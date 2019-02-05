@@ -18,7 +18,7 @@ const multer = require('multer');
 const _ = require('lodash');
 const bodyParser = require('body-parser');
 const router = express.Router();
-const app = express();
+
 
 
 router.post('/:id', asyncMiddleware(async(req, res) => {
@@ -32,7 +32,7 @@ router.post('/:id', asyncMiddleware(async(req, res) => {
             new: true
         });
 
-    if(!food) return res.status(400).send(`Fodd with ID '${req.params.id}' was not found`);
+    if(!food) return res.status(400).send(`Food with ID '${req.params.id}' was not found`);
     
     res.send(food);
 }));
