@@ -1,7 +1,7 @@
 const {User} = require('../../../models/objects/users/user');
 const{Food} = require('../../../models/objects/food/food');
 const auth = require('../../../middleware/auth');
-const asyncMiddleware = require('../../../middleware/async');
+const validation = require('../../helpers/transaction/validation');
 const express = require('express');
 const router = express.Router();
 
@@ -13,6 +13,10 @@ const router = express.Router();
         0.5 towards earned stamps. Receiver decrements -1 foodStamps. 
  */
 router.post('/', auth, async (req,res) => {
+    const validate = validation(req.body);
+
+    if(validate.error) return res.status(400).send(validate.error.details[0].message);
+
     const receiver = await User.findById(req.user);
     const food = await Food.findById(req.body._id);
 
@@ -31,7 +35,6 @@ router.post('/', auth, async (req,res) => {
     receiver.save();
 
     res.send(receiver); //maybe send a req for api/update/delete?
-
 });
 
 /**
