@@ -44,7 +44,7 @@ router.post('/', auth, asyncMiddleware (async (req,res) => {
     });
     if(!giver) return res.status(400).send("Giver not found");
     if(!receiver.foodStamp){
-        receiver.earnedStamps -= 1; 
+        receiver.earnedStamps -= 1; //test logic
     }else{
         receiver.foodStamp -= 1;
     }

@@ -66,20 +66,24 @@ const upload = multer({
         Takes the data that is passed in the request
         and creates a food object that is being stored in the database.     
  */
-router.post('/', auth, upload.single('foodImage'), asyncMiddleware(async(req, res) => {
+router.post('/', auth, upload.single('foodImage'), async(req, res) => {
+    try{
+        const user = await User.findById(req.user._id);
     
-    const user = await User.findById(req.user._id);
-    
-    //setting requsted body for necessary food information. 
-    req.body.postedBy = req.user._id;
-    req.body.lat = user.lat;
-    req.body.long = user.long;
-    req.body.foodImage = req.file.path
-    
-    const food = new Food(_.pick(req.body, ['name', 'type', 'postedBy', 'lat', 'long', 'foodImage']));
-    food.save();
-    res.send(_.pick(food, ['_id']));
-}));
+        //setting requsted body for necessary food information. 
+        req.body.postedBy = req.user._id;
+        req.body.lat = user.lat;
+        req.body.long = user.long;
+        req.body.foodImage = req.file.path
+        
+        const food = new Food(_.pick(req.body, ['name', 'type', 'postedBy', 'lat', 'long', 'foodImage']));
+        food.save();
+        res.send(_.pick(food, ['_id']));
+    }catch(ex){
+        res.status(404).send("Something went wrong when trying to post food");
+    }
+
+});
 
 
 module.exports = router;

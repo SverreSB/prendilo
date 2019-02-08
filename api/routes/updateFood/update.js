@@ -16,7 +16,6 @@ const asyncMiddleware = require('../../../middleware/async');
 const express = require('express');
 const multer = require('multer');
 const _ = require('lodash');
-const bodyParser = require('body-parser');
 const router = express.Router();
 
 
@@ -43,13 +42,13 @@ router.post('/:id', asyncMiddleware(async(req, res) => {
 	   	Checks if given ID exists, if not then an error will appear.
 	   	If ID exists the the food is deleted.
  */
-router.delete('/delete/:id', asyncMiddleware( async (req, res) => {
+/*router.delete('/delete/:id', asyncMiddleware( async (req, res) => {
     const food = await Food.findById(req.params.id);
     if(!food) return res.status(404).send("Error, food does not exist");
 	
 	res.send(food);
 	food.delete();
-}));
+}));*/
 
 
 module.exports = router;
