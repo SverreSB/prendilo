@@ -31,6 +31,18 @@ router.get('/food', auth, asyncMiddleware( async (req, res) => {
 }));
 
 /**
+ *  Post request for changeing email addrss
+ */
+
+router.post('/changeEmail', auth, asyncMiddleware( async (req, res) => {
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, {
+        email: req.body.email
+    });
+
+    res.send(updatedUser);
+}));
+
+/**
  *  Post request for password change
         Fetches user, validates body of request, 
         validating confirm PW, new PW and old PW,
