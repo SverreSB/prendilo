@@ -24,40 +24,45 @@ const emailvalidation = require('../../../middleware/emailvalidation');
         If not, then a user object is created.
         The password is salted and hashed before being stored in db
  */
-router.post('/', emailvalidation, asyncMiddleware( async(req, res) => {
-    //if(!validateEmail(req.body.email)) return res.status(400).send('Invalid email');
-    req.body.lat = generateLat();
-    req.body.long = generateLong();
-    req.body.foodStamp = 5;
+router.post('/', asyncMiddleware( async(req, res) => {
     var validateInput = validateSignup(req.body);
-    
-    
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
     
-    let user = await User.findOne({email: req.body.email});
+    let user = await User.findOne({phone: req.body.phone});
     if(user) return res.status(400).send('User is already registered');
  
+    //Adding fields to body before creating user. 
+    req.body.foodStamp = 5;
+    req.body.earnedStamps = 0;
+    req.body.validated = false;
+    req.body.lat = generateLat();
+    req.body.long = generateLong();
+
+    user = new User(_.pick(req.body, ['name', 'phone', 'email', 'password', 'lat', 'long', 'foodStamp', 'earnedStamps', 'validated']));
     
-    user = new User(_.pick(req.body, ['name', 'phone', 'email', 'password', 'lat', 'long', 'foodStamp', 'earnedStamps']));
-  
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
-
-    user.save();
-    res.send(_.pick(user, ['_id', 'email']));
+    user.save(function(err, result) {
+         if(err) { res.status(500).send(err.message) }
+         else { res.status(200).send('Sucsesfull signup') }
+    });
 }));
 
 
 module.exports = router;
 
-function generateLat(){
+function generateLat() {
     const min = 36.627208;
     const max = 36.666207;
     return (Math.random() * (max - min) + min).toFixed(6); 
 }
 
-function generateLong(){
+function generateLong() {
     const min = -121.751907;
     const max = -121.816795;
     return (Math.random() * (max - min) + min).toFixed(6); 
+}
+
+function generateValidation() {
+    return Math.floor((Math.random() * 999999) + 100000);
 }

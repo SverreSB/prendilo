@@ -35,21 +35,19 @@ const schema = new mongoose.Schema({
         type: String,
         min: 4,
         max: 64,
-        required: true,
         unique: true
     },
     password: {
         type: String,
         minlength: 4,
-        maxlength: 128
+        maxlength: 128,
+        required: true
     },
     lat: {
         type: Number,
-        required: true
     },
     long: {
         type: Number,
-        required: true
     },
     foodStamp: {
         type: Number,
@@ -58,6 +56,10 @@ const schema = new mongoose.Schema({
     },
     earnedStamps: {
         type: Number,
+        required: true
+    },
+    validated: {
+        type: Boolean,
         required: true
     }
 });
@@ -85,12 +87,8 @@ function validateSignup(body){
     const schema = {
         name: Joi.string().min(3).max(16).required(),
         phone: Joi.number().min(1111).max(99999999999).required(),
-        email: Joi.string().min(4).max(64).required(),
-        password: Joi.string().min(4).max(128).required(),
-        lat: Joi.number().required(),
-        long: Joi.number().required(),
-        foodStamp: Joi.number().max(5).required(),
-        earnedStamps: Joi.number().required()
+        email: Joi.string().min(4).max(64),
+        password: Joi.string().min(4).max(128).required()
     }
 
     const validation = Joi.validate(body, schema);
