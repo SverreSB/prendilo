@@ -26,7 +26,7 @@ module.exports = function (req, res, next) {
             const decoded = jwt.verify(bearerToken, config.get('jwtPrivateKey'));
             req.token = bearerToken;
             req.user = decoded;
-            next()
+            next();
         }catch(err) { res.status(403).send('Forbidden') } 
     }
     else{

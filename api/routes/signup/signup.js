@@ -14,6 +14,7 @@ const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
 const {User, validateSignup} = require('../../../models/objects/users/user');
+const emailvalidation = require('../../../middleware/emailvalidation');
 
 
 /**
@@ -23,12 +24,13 @@ const {User, validateSignup} = require('../../../models/objects/users/user');
         If not, then a user object is created.
         The password is salted and hashed before being stored in db
  */
-router.post('/', asyncMiddleware( async(req, res) => {
-    if(!validateEmail(req.body.email)) return res.status(400).send('Invalid email');
+router.post('/', emailvalidation, asyncMiddleware( async(req, res) => {
+    //if(!validateEmail(req.body.email)) return res.status(400).send('Invalid email');
     req.body.lat = generateLat();
     req.body.long = generateLong();
     req.body.foodStamp = 5;
     var validateInput = validateSignup(req.body);
+    
     
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
     
@@ -58,9 +60,4 @@ function generateLong(){
     const min = -121.751907;
     const max = -121.816795;
     return (Math.random() * (max - min) + min).toFixed(6); 
-}
-
-function validateEmail(email) {
-    var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return regex.test(String(email).toLowerCase());
 }
