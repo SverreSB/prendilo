@@ -14,7 +14,7 @@ const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
 const {User, validateSignup} = require('../../../models/objects/users/user');
-const emailvalidation = require('../../../middleware/emailvalidation');
+
 
 
 /**
@@ -42,6 +42,7 @@ router.post('/', asyncMiddleware( async(req, res) => {
     
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
+    user.validated = generateValidation();
     user.save(function(err, result) {
          if(err) { res.status(500).send(err.message) }
          else { res.status(200).send('Sucsesfull signup') }
