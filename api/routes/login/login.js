@@ -11,6 +11,7 @@
 
 const asyncMiddleware= require('../../../middleware/async');
 const {User, validateLogin} = require('../../../models/objects/users/user');
+
 const {bcryptCompare} = require('../../../models/helpers/comparePw');
 const _ = require('lodash');
 var bodyParser= require('body-parser');
@@ -34,8 +35,9 @@ router.post('/', asyncMiddleware(async(req, res) => {
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
 
     //Validating that email is in db and that PW matches email
-    const user = await User.findOne({email: req.body.email});
+    const user = await User.findOne({phone: req.body.phone});
     if(!user) return res.status(400).send('Invalid username or password');
+    if(user.validated != 0) return res.status(400).send('User not validated');
     const validPassword = await bcryptCompare(req.body.password, user.password);
     if(!validPassword || !user) return res.status(400).send('Invalid username or password');
 

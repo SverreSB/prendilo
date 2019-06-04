@@ -59,7 +59,7 @@ const schema = new mongoose.Schema({
         required: true
     },
     validated: {
-        type: Boolean,
+        type: Number,
         required: true
     }
 });
@@ -116,7 +116,7 @@ function validatePassword(body){
  */
 function validateLogin(body){
     const schema = {
-        email: Joi.string().min(4).max(64).required(),
+        phone: Joi.number().min(1111).max(999999999999).required(),
         password: Joi.string().min(4).required()
     };
 

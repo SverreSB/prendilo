@@ -8,7 +8,6 @@
 
 
 module.exports = function(req, res, next) {
-
     const email = req.body.email;
     try {
         if(!validateEmail(email)) return res.status(400).send('Invalid email');
