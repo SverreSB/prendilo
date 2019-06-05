@@ -14,6 +14,7 @@ const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
 const {User, validateSignup} = require('../../../models/objects/users/user');
+const auth = require('../../../middleware/auth');
 
 
 
@@ -47,6 +48,25 @@ router.post('/', asyncMiddleware( async(req, res) => {
          if(err) { res.status(500).send(err.message) }
          else { res.status(200).send('Sucsesfull signup') }
     });
+}));
+
+/**
+ *  Validates phonenumber
+        Finds user from _id returned by auth middleware
+        If found compares users validation with passed in validation code
+        Updates 'validated' field to 1
+ */
+router.post('/validate_phone', auth, asyncMiddleware( async(req, res) => {
+    const user = await User.findById(req.user._id);
+    if(!user) return res.status(400).send('User not found');
+    
+    if(user.validated != req.body.validation_code) return res.status(400).send('Invalid validation code');
+
+    User.updateOne({_id: req.user._id}, {$set: {validated: 1}}, function(err, result) {
+        if(err) { return res.status(400).send('Db not updated') }
+    });
+    
+    res.status(200).send('Phonenumber validated');
 }));
 
 

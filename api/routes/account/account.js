@@ -34,7 +34,7 @@ router.get('/food', auth, asyncMiddleware( async (req, res) => {
  *  Post request for changeing email addrss
  */
 
-router.post('/changeEmail', auth, asyncMiddleware( async (req, res) => {
+router.post('/change_email', auth, asyncMiddleware( async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(req.user._id, {
         email: req.body.email
     });

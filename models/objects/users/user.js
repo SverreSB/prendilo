@@ -80,8 +80,8 @@ const User = mongoose.model('User', schema);
 
 
 /**
- * Function for validating that data given by user matches a given schema
- * @param {*} body, json file
+ *  Function for validating that data given by user matches a given schema
+ *  @param {*} body, json file
  */
 function validateSignup(body){
     const schema = {
@@ -97,6 +97,11 @@ function validateSignup(body){
 
 }
 
+
+/**
+ *  Function for validating passed in values when changeing password
+ *  @param {*} body 
+ */
 function validatePassword(body){
     const schema = {
         old_password: Joi.string().min(4).max(128).required(),
