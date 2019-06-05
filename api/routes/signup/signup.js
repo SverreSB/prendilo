@@ -14,6 +14,7 @@ const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
 const {User, validateSignup} = require('../../../models/objects/users/user');
+const phoneValidation = require('../../helpers/signup/phoneValidation');
 const auth = require('../../../middleware/auth');
 
 
@@ -43,7 +44,8 @@ router.post('/', asyncMiddleware( async(req, res) => {
     
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
-    user.validated = generateValidation();
+    
+    user.validated = phoneValidation(user.phone);
     user.save(function(err, result) {
          if(err) { res.status(500).send(err.message) }
          else { res.status(200).send('Sucsesfull signup') }
@@ -59,7 +61,7 @@ router.post('/', asyncMiddleware( async(req, res) => {
 router.post('/validate_phone', auth, asyncMiddleware( async(req, res) => {
     const user = await User.findById(req.user._id);
     if(!user) return res.status(400).send('User not found');
-    
+
     if(user.validated != req.body.validation_code) return res.status(400).send('Invalid validation code');
 
     User.updateOne({_id: req.user._id}, {$set: {validated: 1}}, function(err, result) {
@@ -84,6 +86,3 @@ function generateLong() {
     return (Math.random() * (max - min) + min).toFixed(6); 
 }
 
-function generateValidation() {
-    return Math.floor((Math.random() * 999999) + 100000);
-}
