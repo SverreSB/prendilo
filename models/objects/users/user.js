@@ -35,7 +35,7 @@ const schema = new mongoose.Schema({
         type: String,
         min: 4,
         max: 64,
-        unique: true
+        sparse: true
     },
     password: {
         type: String,

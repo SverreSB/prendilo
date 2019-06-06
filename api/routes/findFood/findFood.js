@@ -32,7 +32,7 @@ app.use(bodyParser.json());
 router.get('/', auth, async(req, res) => {
 
     const food = await Food.find().select('-_id').select('-__v');
-
+    //const food = await Food.find( { $where: function() { return this.lat > 36.66} } )
     res.status(200).json(food);
 });
 

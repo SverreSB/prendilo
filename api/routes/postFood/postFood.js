@@ -9,7 +9,7 @@
  ******************************/
 
 
-const {Food} = require('../../../models/objects/food/food');
+const {Food, validatePost} = require('../../../models/objects/food/food');
 const {User} = require('../../../models/objects/users/user');
 const auth = require('../../../middleware/auth');
 const asyncMiddleware = require('../../../middleware/async');
@@ -64,26 +64,28 @@ const upload = multer({
 /**
  *  Route handler for api/postFood
         Takes the data that is passed in the request
-        and creates a food object that is being stored in the database.     
+        and creates a food object that is being stored in the database.
+        upload.single('foodImage') -> middleware to check format of image 
+        include: req.body.foodImage = req.file.path
  */
-router.post('/', auth, upload.single('foodImage'), async(req, res) => {
-    try{
-        const user = await User.findById(req.user._id);
+router.post('/', auth, asyncMiddleware(async(req, res) => {
+    console.log(req.user._id);
+    const user = await User.findById(req.user._id);
     
-        //setting requsted body for necessary food information. 
-        req.body.postedBy = req.user._id;
-        req.body.lat = user.lat;
-        req.body.long = user.long;
-        req.body.foodImage = req.file.path
-        
-        const food = new Food(_.pick(req.body, ['name', 'type', 'postedBy', 'lat', 'long', 'foodImage']));
-        food.save();
-        res.send(_.pick(food, ['_id']));
-    }catch(ex){
-        res.status(404).send("Something went wrong when trying to post food");
-    }
+    //setting requsted body for necessary food information. 
+    req.body.postedBy = req.user._id;
+    req.body.lat = user.lat;
+    req.body.long = user.long;
+    
+    const validateInput = validatePost(req.body);
+    if(validateInput.error) return res.status(400).send('Invalid input');
 
-});
+    const food = new Food(_.pick(req.body, ['name', 'type', 'postedBy', 'lat', 'long', 'foodImage']));
+    food.save();
+    res.send(_.pick(food, ['_id']));
+    
+
+}));
 
 
 module.exports = router;

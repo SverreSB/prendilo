@@ -34,18 +34,34 @@ const schema = new mongoose.Schema({
     long: {
         type: Number,
         required: true
-    },
+    }/*,
     foodImage: {
         type: String,
         required: true
-    }
+    }*/
 });
 
 
 const Food = mongoose.model('Food', schema);
 
 
-function validate(body) {
+function validatePost(body) {
+    const schema = {
+        name: Joi.string().min(2).max(32).required(),
+        type: Joi.string().min(2).max(12).required(),
+        name: Joi.string().min(2).max(32).required(),
+        type: Joi.string().min(2).max(12).required(),
+        postedBy: Joi.string().required(),
+        lat: Joi.number().required(),
+        long: Joi.number().required()
+    }
+
+    const validation = Joi.validate(body, schema);
+
+    return validation;
+}
+
+function validateUpdate(body) {
     const schema = {
         name: Joi.string().min(2).max(32).required(),
         type: Joi.string().min(2).max(12).required()
@@ -58,4 +74,5 @@ function validate(body) {
 
 exports.Food = Food;
 exports.foodSchema = schema;
-exports.validateUpdate = validate;
+exports.validateUpdate = validateUpdate;
+exports.validatePost = validatePost

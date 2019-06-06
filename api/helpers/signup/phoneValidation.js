@@ -19,7 +19,7 @@ module.exports = function(phoneNumber) {
     const code = generateValidation();
     text += code;
 
-    nexmo.message.sendSms(from, to, text)
+    //nexmo.message.sendSms(from, to, text)
     
     return code;
 }
