@@ -10,6 +10,18 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 
+const GeoSchema = new mongoose.Schema({
+    type: {
+        type: String,
+        default: 'Point'
+    },
+    coordinates: {
+        type: [Number],
+        index: "2dsphere",
+        validate: [arrayLimit, '{PATH} must contain 2 items(latitude and longitude)']
+    }
+})
+
 const schema = new mongoose.Schema({
     name: {
         type: String,
@@ -27,9 +39,9 @@ const schema = new mongoose.Schema({
         type: String,
         require: true
     },
-    location: {
-        type: Array,
-        validate: [arrayLimit, '{PATH} must contain 2 items(latitude and longitude)']
+    geometry: {
+        type: GeoSchema,
+        required: true
     }
     /*,
     foodImage: {
@@ -51,7 +63,7 @@ function validatePost(body) {
         name: Joi.string().min(2).max(32).required(),
         type: Joi.string().min(2).max(12).required(),
         postedBy: Joi.string().required(),
-        location: Joi.array().required()
+        geometry: Joi.object().required()
     }
 
     const validation = Joi.validate(body, schema);

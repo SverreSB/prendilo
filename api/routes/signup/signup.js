@@ -75,14 +75,14 @@ router.post('/validate_phone', auth, asyncMiddleware( async(req, res) => {
 module.exports = router;
 
 function generateLat() {
-    const min = 36.627208;
-    const max = 36.666207;
-    return (Math.random() * (max - min) + min).toFixed(6); 
+    const min = 36.627;
+    const max = 36.666;
+    return (Math.random() * (max - min) + min).toFixed(3); 
 }
 
 function generateLong() {
-    const min = -121.751907;
-    const max = -121.816795;
-    return (Math.random() * (max - min) + min).toFixed(6); 
+    const min = -121.751;
+    const max = -121.816;
+    return (Math.random() * (max - min) + min).toFixed(3); 
 }
 

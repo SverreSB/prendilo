@@ -74,12 +74,12 @@ router.post('/', auth, asyncMiddleware(async(req, res) => {
     
     //setting requsted body for necessary food information. 
     req.body.postedBy = req.user._id;
-    req.body.location = [generateLat(), generateLong()];
+    req.body.geometry = {"type": "Point", "coordinates": [generateLong(), generateLat()]};
     
     const validateInput = validatePost(req.body);
     if(validateInput.error) return res.status(400).send('Invalid input');
 
-    const food = new Food(_.pick(req.body, ['name', 'type', 'postedBy', 'location', 'foodImage']));
+    const food = new Food(_.pick(req.body, ['name', 'type', 'postedBy', 'geometry', 'foodImage']));
     food.save( (err, result) => {
         if(err) { res.status(500).send(err.message) }
         else { res.send(_.pick(food, ['_id'])) }
@@ -87,15 +87,15 @@ router.post('/', auth, asyncMiddleware(async(req, res) => {
 }));
 
 function generateLat() {
-    const min = 36.627208;
-    const max = 36.666207;
-    return (Math.random() * (max - min) + min).toFixed(6); 
+    const min = 36.627;
+    const max = 36.666;
+    return (Math.random() * (max - min) + min).toFixed(3); 
 }
 
 function generateLong() {
-    const min = -121.751907;
-    const max = -121.816795;
-    return (Math.random() * (max - min) + min).toFixed(6); 
+    const min = -121.751;
+    const max = -121.816;
+    return (Math.random() * (max - min) + min).toFixed(3); 
 }
 
 
