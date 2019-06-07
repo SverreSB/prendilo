@@ -69,23 +69,34 @@ const upload = multer({
         include: req.body.foodImage = req.file.path
  */
 router.post('/', auth, asyncMiddleware(async(req, res) => {
-    console.log(req.user._id);
-    const user = await User.findById(req.user._id);
+    
+    //const user = await User.findById(req.user._id);
     
     //setting requsted body for necessary food information. 
     req.body.postedBy = req.user._id;
-    req.body.lat = user.lat;
-    req.body.long = user.long;
+    req.body.location = [generateLat(), generateLong()];
     
     const validateInput = validatePost(req.body);
     if(validateInput.error) return res.status(400).send('Invalid input');
 
-    const food = new Food(_.pick(req.body, ['name', 'type', 'postedBy', 'lat', 'long', 'foodImage']));
-    food.save();
-    res.send(_.pick(food, ['_id']));
-    
-
+    const food = new Food(_.pick(req.body, ['name', 'type', 'postedBy', 'location', 'foodImage']));
+    food.save( (err, result) => {
+        if(err) { res.status(500).send(err.message) }
+        else { res.send(_.pick(food, ['_id'])) }
+    });
 }));
+
+function generateLat() {
+    const min = 36.627208;
+    const max = 36.666207;
+    return (Math.random() * (max - min) + min).toFixed(6); 
+}
+
+function generateLong() {
+    const min = -121.751907;
+    const max = -121.816795;
+    return (Math.random() * (max - min) + min).toFixed(6); 
+}
 
 
 module.exports = router;

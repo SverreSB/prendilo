@@ -27,21 +27,20 @@ const schema = new mongoose.Schema({
         type: String,
         require: true
     },
-    lat: {
-        type: Number,
-        required: true
-    },
-    long: {
-        type: Number,
-        required: true
-    }/*,
+    location: {
+        type: Array,
+        validate: [arrayLimit, '{PATH} must contain 2 items(latitude and longitude)']
+    }
+    /*,
     foodImage: {
         type: String,
         required: true
     }*/
 });
 
-
+function arrayLimit(val){ 
+    return val.length == 2;
+}
 const Food = mongoose.model('Food', schema);
 
 
@@ -52,8 +51,7 @@ function validatePost(body) {
         name: Joi.string().min(2).max(32).required(),
         type: Joi.string().min(2).max(12).required(),
         postedBy: Joi.string().required(),
-        lat: Joi.number().required(),
-        long: Joi.number().required()
+        location: Joi.array().required()
     }
 
     const validation = Joi.validate(body, schema);
