@@ -38,7 +38,9 @@ const schema = new mongoose.Schema({
         type: String,
         required: true
     }*/
-});
+}, {timestamps: true});
+
+schema.index({createdAt: 1}, {expireAfterSeconds: 604800});
 
 
 const Food = mongoose.model('Food', schema);
