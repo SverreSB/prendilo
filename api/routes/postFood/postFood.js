@@ -87,15 +87,15 @@ router.post('/', auth, asyncMiddleware(async(req, res) => {
 }));
 
 function generateLat() {
-    const min = 36.627;
-    const max = 36.666;
-    return (Math.random() * (max - min) + min).toFixed(3); 
+    const min = 36.5600000;
+    const max = 36.6000000;
+    return (Math.random() * (max - min) + min).toFixed(7); 
 }
 
 function generateLong() {
-    const min = -121.751;
-    const max = -121.816;
-    return (Math.random() * (max - min) + min).toFixed(3); 
+    const min = -121.8000000;
+    const max = -121.8300000;
+    return (Math.random() * (max - min) + min).toFixed(7); 
 }
 
 

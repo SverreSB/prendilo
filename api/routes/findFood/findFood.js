@@ -28,6 +28,8 @@ app.use(bodyParser.json());
         Finds food within 5km of user requesting food
  */
 router.get('/', auth, asyncMiddleware(async(req, res) => {
+    const user = await User.findById(req.user._id);
+    if(user.foodStamp == 0 && user.earnedStamps == 0) return res.status(400).send('Can\'t find food without foodstamps');
     Food.aggregate([{
         $geoNear: {
           near: {
