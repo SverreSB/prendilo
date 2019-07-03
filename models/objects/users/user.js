@@ -14,7 +14,7 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 const config = require('config');
 const jwt = require('jsonwebtoken');
-
+const {GeoSchema} = require('../../schema/geo');
 
 const schema = new mongoose.Schema({
     name: {
@@ -35,7 +35,8 @@ const schema = new mongoose.Schema({
         type: String,
         min: 4,
         max: 64,
-        sparse: true
+        sparse: true,
+        unique: true
     },
     password: {
         type: String,
@@ -43,11 +44,9 @@ const schema = new mongoose.Schema({
         maxlength: 128,
         required: true
     },
-    lat: {
-        type: Number,
-    },
-    long: {
-        type: Number,
+    location: {
+        type: [Number],
+        validate: [arrayLimit, '{PATH} must contain 2 items(latitude and longitude)']
     },
     foodStamp: {
         type: Number,
@@ -94,7 +93,6 @@ function validateSignup(body){
     const validation = Joi.validate(body, schema);
 
     return validation;
-
 }
 
 
@@ -128,9 +126,15 @@ function validateLogin(body){
     const validation = Joi.validate(body, schema);
 
     return validation;
-
 }
 
+/**
+ *  Validating arraysize of location in user model
+ *  @param {*} val 
+ */
+function arrayLimit(val){ 
+    return val.length == 2;
+}
 
 exports.User = User;
 exports.userSchema = schema;

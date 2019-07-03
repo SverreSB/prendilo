@@ -9,18 +9,8 @@
 
 const mongoose = require('mongoose');
 const Joi = require('joi');
+const {GeoSchema} = require('../../schema/geo');
 
-const GeoSchema = new mongoose.Schema({
-    type: {
-        type: String,
-        default: 'Point'
-    },
-    coordinates: {
-        type: [Number],
-        index: "2dsphere",
-        validate: [arrayLimit, '{PATH} must contain 2 items(latitude and longitude)']
-    }
-})
 
 const schema = new mongoose.Schema({
     name: {
@@ -48,11 +38,11 @@ const schema = new mongoose.Schema({
         type: String,
         required: true
     }*/
-});
+}, {timestamps: true});
 
-function arrayLimit(val){ 
-    return val.length == 2;
-}
+schema.index({createdAt: 1}, {expireAfterSeconds: 604800}); //604800 seconds == 7 days
+
+
 const Food = mongoose.model('Food', schema);
 
 
