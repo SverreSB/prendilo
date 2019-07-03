@@ -18,7 +18,7 @@ const account = require('../api/routes/account/account');
 const postFood = require('../api/routes/postFood/postFood');
 const findFood = require('../api/routes/findFood/findFood');
 const updateFood = require('../api/routes/updateFood/update');
-const deleteFood = require('../api/routes/deleteFood/delete')
+const deleteFood = require('../api/routes/deleteFood/delete');
 
 //Redirect API
 const redirectPf = require('../api/routes/postFood/redirectPostFood');
@@ -27,6 +27,10 @@ const redirectAcc = require('../api/routes/account/redirectAccount');
 
 //Feature API
 const transaction = require('../api/routes/transaction/transaction');
+
+//Chat API
+const messages = require('../api/routes/chat/messages');
+const startChat = require('../api/routes/chat/startChat');
 
 
 module.exports = function(app){
@@ -50,4 +54,8 @@ module.exports = function(app){
 
     //Feature routes
     app.use('/api/transaction', transaction);
+
+    //Chat routes
+    app.use('/api/messages', messages);
+    app.use('/api/startChat', startChat);
 }

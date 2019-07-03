@@ -40,7 +40,7 @@ const schema = new mongoose.Schema({
     }*/
 }, {timestamps: true});
 
-schema.index({createdAt: 1}, {expireAfterSeconds: 604800});
+schema.index({createdAt: 1}, {expireAfterSeconds: 604800}); //604800 seconds == 7 days
 
 
 const Food = mongoose.model('Food', schema);
