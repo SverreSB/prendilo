@@ -29,8 +29,8 @@ const redirectAcc = require('../api/routes/account/redirectAccount');
 const transaction = require('../api/routes/transaction/transaction');
 
 //Chat API
-const messages = require('../api/routes/chat/messages');
-const startChat = require('../api/routes/chat/startChat');
+const message = require('../api/routes/chat/message');
+const start = require('../api/routes/chat/start');
 
 
 module.exports = function(app){
@@ -56,6 +56,6 @@ module.exports = function(app){
     app.use('/api/transaction', transaction);
 
     //Chat routes
-    app.use('/api/messages', messages);
-    app.use('/api/startChat', startChat);
+    app.use('/api/chat/message', message);
+    app.use('/api/chat/start', start);
 }
