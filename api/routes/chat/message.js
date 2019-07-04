@@ -9,12 +9,16 @@ const {Chat} = require('../../../models/objects/chat/chat');
 
 router.post('/send', asyncMiddleware( async(req, res) => {
     const message = { "sender": req.body.sender, "message": req.body.message}
-    const chat = await Chat.findOneAndUpdate(
+    await Chat.findOneAndUpdate(
         { participants: { $in: [req.body.sender] } },
-        { $push: {messages: message} }
+        { $push: {messages: message} },
+        { new: true },
+        (err, doc) => {
+            console.log(err)
+            if(err) res.send(err)
+            else res.send(doc.messages)
+        }
     )
-
-    res.send(chat.messages)
 }))
 
 module.exports = router;
