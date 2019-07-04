@@ -3,7 +3,7 @@ const {ChatMessageSchema} = require('../../schema/chatMessages');
 
 const schema = new mongoose.Schema({
     participants: {
-        type: Array,
+        type: [String],
         required: true
     },
     messages: {

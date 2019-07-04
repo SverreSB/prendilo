@@ -10,10 +10,10 @@ const {Chat} = require('../../../models/objects/chat/chat');
 
 
 router.post('/', asyncMiddleware( async(req, res) =>{
-    const receiver= await User.findOne({phone: req.body.receiver});
-    const giver = await User.findById(req.body.user_id);
+    const giver = await User.findOne({phone: req.body.giver});
+    const receiver = await User.findById(req.body.receiver);
     req.body.participants = [giver._id, receiver._id]
-    req.body.messages = [{"sender": giver.name, "message": "test"}]
+    req.body.messages = [{"sender": giver.name, "message": req.body.message}]
     const chat = new Chat(_.pick(req.body, ['participants', 'messages']))
     chat.save();
     res.status(200).send('test');

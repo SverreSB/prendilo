@@ -9,6 +9,6 @@ const ChatMessageSchema = new mongoose.Schema({
         type: String,
         maxlength: 256
     }
-});
+}, {timestamps: true});
 
 exports.ChatMessageSchema = ChatMessageSchema
