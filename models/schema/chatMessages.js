@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Joi = require('joi');
 
 const ChatMessageSchema = new mongoose.Schema({
     sender: {
@@ -7,8 +8,21 @@ const ChatMessageSchema = new mongoose.Schema({
     },
     message: {
         type: String,
+        minlength: 1,
         maxlength: 256
     }
 }, {timestamps: true});
 
-exports.ChatMessageSchema = ChatMessageSchema
+function validateMessage(body) {
+    const schema = {
+        sender: Joi.string().length(24).required(),
+        message: Joi.string().min(1).max(256)
+    }
+    
+    const validation = Joi.validate(body, schema);
+
+    return validation;
+}
+
+exports.ChatMessageSchema = ChatMessageSchema;
+exports.validateMessage = validateMessage;
