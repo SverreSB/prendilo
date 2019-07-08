@@ -50,7 +50,6 @@ function validatePost(body) {
     const schema = {
         name: Joi.string().min(2).max(32).required(),
         type: Joi.string().min(2).max(12).required(),
-        name: Joi.string().min(2).max(32).required(),
         type: Joi.string().min(2).max(12).required(),
         postedBy: Joi.string().required(),
         geometry: Joi.object().required()

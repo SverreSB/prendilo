@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
-const {ChatMessageSchema} = require('../../schema/chatMessages');
+const {MessageSchema} = require('../../schema/message');
 
 const schema = new mongoose.Schema({
     participants: {
@@ -9,7 +9,8 @@ const schema = new mongoose.Schema({
         validate: [arrayLimit, '{PATH} must contain 2 items(latitude and longitude)']
     },
     messages: {
-        type: [ChatMessageSchema]
+        type: [MessageSchema],
+        required: true
     }
 });
 
@@ -19,7 +20,7 @@ function arrayLimit(val){
 
 const Chat = mongoose.model('Chat', schema);
 
-function validateChat(body) {
+function validateStartChat(body) {
     const schema = {
         participants: Joi.array().required(),
         messages: Joi.array().required()
@@ -31,4 +32,4 @@ function validateChat(body) {
 }
 
 exports.Chat = Chat
-exports.validateChat = validateChat
+exports.validateStartChat = validateStartChat
