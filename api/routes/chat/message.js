@@ -20,7 +20,9 @@ router.post('/send', asyncMiddleware( async(req, res) => {
     const validateInput = validateMessage(message);
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
 
-    res.send('done')
+    chat.messages.push(message);
+    chat.save();
+    res.send('done');
 }))
 
 module.exports = router;

@@ -10,7 +10,8 @@ const MessageSchema = mongoose.Schema({
     message: {
         type: String,
         minlength: 1,
-        maxlength: 256
+        maxlength: 256,
+        required: true
     }
 }, {timestamps: true});
 

@@ -60,7 +60,10 @@ const schema = new mongoose.Schema({
     validated: {
         type: Number,
         required: true
-    }
+    },
+    chats: [{
+        type: mongoose.Schema.Types.ObjectId
+    }]
 });
 
 

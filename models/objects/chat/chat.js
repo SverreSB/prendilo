@@ -10,7 +10,7 @@ const schema = new mongoose.Schema({
     },
     messages: {
         type: [MessageSchema],
-        validate: [arrayLimit, '{PATH} must contain 2 items(sender and message)']
+        required: true
     }
 });
 
