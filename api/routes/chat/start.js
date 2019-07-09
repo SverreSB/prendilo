@@ -3,6 +3,7 @@ const router = express.Router();
 const _ = require('lodash');
 
 const asyncMiddleware = require('../../../middleware/async');
+const auth = require('../../../middleware/auth');
 const {User} = require('../../../models/objects/users/user');
 const {Chat, validateStartChat} = require('../../../models/objects/chat/chat');
 const {validateMessage} = require('../../../models/schema/message');
@@ -15,13 +16,13 @@ const {validateMessage} = require('../../../models/schema/message');
         create array of message object and array of participants and validates if it is a valid chat
         Creates chat, store the id in giver and receiver user and saves chat, giver and receiver update, to db
  */
-router.post('/', asyncMiddleware( async(req, res) =>{
-    const message = {"sender": req.body.receiver, "message": req.body.message};
+router.post('/', auth, asyncMiddleware( async(req, res) =>{
+    const message = {"sender": req.user._id, "message": req.body.message};
     const validateChatMessage = validateMessage(message);
     if(validateChatMessage.error) return res.status(400).send(validateChatMessage.error.details[0].message);
 
     const giver = await User.findOne({phone: req.body.giver});
-    const receiver = await User.findById(req.body.receiver);
+    const receiver = await User.findById(req.user._id);
 
     if(!(giver && receiver)) return res.status(400).send('Chat not created, invalid giver or receiver');
 
