@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const asyncMiddleware = require('../../../middleware/async');
+const auth = require('../../../middleware/auth');
 const {Chat} = require('../../../models/objects/chat/chat');
 const {validateMessage} = require('../../../models/schema/message');
 
@@ -13,7 +14,7 @@ const {validateMessage} = require('../../../models/schema/message');
         creates message object and validates it
         saves message the messages array in chat object
  */
-router.post('/send', asyncMiddleware( async(req, res) => {
+router.post('/send', auth, asyncMiddleware( async(req, res) => {
     const chat = await Chat.findById(req.body.chat_id,
         (err) => {
             if(err) return res.status(400).send(err.message)
@@ -21,9 +22,9 @@ router.post('/send', asyncMiddleware( async(req, res) => {
 
     if(!chat) return res.status(400).send('Chat not found.');
 
-    if(chat.participants.indexOf(req.body.sender) < 0 ) return res.status(400).send('Can\'t send message');
+    if(chat.participants.indexOf(req.user._id) < 0 ) return res.status(400).send('Can\'t send message');
 
-    const message = { "sender": req.body.sender, "message": req.body.message}
+    const message = { "sender": req.user._id, "message": req.body.message}
     const validateInput = validateMessage(message);
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
 
