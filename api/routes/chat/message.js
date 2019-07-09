@@ -16,6 +16,8 @@ router.post('/send', asyncMiddleware( async(req, res) => {
 
     if(!chat) return res.status(400).send('Chat not found.')
 
+    if(chat.participants.indexOf(req.body.sender) < 0 ) return res.status(400).send('Can\'t send message');
+
     const message = { "sender": req.body.sender, "message": req.body.message}
     const validateInput = validateMessage(message);
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
