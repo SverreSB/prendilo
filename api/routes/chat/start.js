@@ -10,6 +10,7 @@ const auth = require('../../../middleware/auth');
 const {User} = require('../../../models/objects/users/user');
 const {Chat, validateStartChat} = require('../../../models/objects/chat/chat');
 const {validateMessage} = require('../../../models/schema/message');
+const {encrypt} = require('../../../models/helpers/cryptography');
 
 
 /**
@@ -20,7 +21,8 @@ const {validateMessage} = require('../../../models/schema/message');
         Creates chat, store the id in giver and receiver user and saves chat, giver and receiver update, to db
  */
 router.post('/', auth, asyncMiddleware( async(req, res) => {
-    const message = {"sender": req.user._id, "message": req.body.message};
+    console.log(encrypt(req.body.message))
+    let message = { "sender": req.user._id, "message": req.body.message };
     const validateChatMessage = validateMessage(message);
     if(validateChatMessage.error) return res.status(400).send(validateChatMessage.error.details[0].message);
 
