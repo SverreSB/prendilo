@@ -3,7 +3,7 @@ const Joi = require('joi');
 
 const {EncryptedMessageSchema} = require('./encryptedMessage');
 
-const MessageSchema = mongoose.Schema({
+const MessageSchema = new mongoose.Schema({
     _id: false,
     sender: {
         type: String,
