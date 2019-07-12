@@ -21,8 +21,7 @@ const {encrypt} = require('../../../models/helpers/cryptography');
         Creates chat, store the id in giver and receiver user and saves chat, giver and receiver update, to db
  */
 router.post('/', auth, asyncMiddleware( async(req, res) => {
-    console.log(encrypt(req.body.message))
-    let message = { "sender": req.user._id, "message": req.body.message };
+    let message = { "sender": req.user._id, "message": encrypt(req.body.message) };
     const validateChatMessage = validateMessage(message);
     if(validateChatMessage.error) return res.status(400).send(validateChatMessage.error.details[0].message);
 
