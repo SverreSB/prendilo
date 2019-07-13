@@ -5,6 +5,7 @@ const asyncMiddleware = require('../../../middleware/async');
 const auth = require('../../../middleware/auth');
 const {Chat} = require('../../../models/objects/chat/chat');
 const {validateMessage} = require('../../../models/schema/message');
+const {encrypt} = require('../../../models/helpers/cryptography');
 
 
 /**
@@ -24,7 +25,7 @@ router.post('/send', auth, asyncMiddleware( async(req, res) => {
 
     if(chat.participants.indexOf(req.user._id) < 0 ) return res.status(400).send('Can\'t send message');
 
-    const message = { "sender": req.user._id, "message": req.body.message}
+    const message = { "sender": req.user._id, "message": encrypt(req.body.message)}
     const validateInput = validateMessage(message);
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
 
