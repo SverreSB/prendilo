@@ -15,6 +15,7 @@ const Joi = require('joi');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 const {GeoSchema} = require('../../schema/geo');
+const {PHONE_NUMBER_MIN, PHONE_NUMBER_MAX} = require('../../../constants/constants');
 
 const schema = new mongoose.Schema({
     name: {
@@ -25,8 +26,8 @@ const schema = new mongoose.Schema({
     },
     phone: {
         type: Number,
-        min: 1111,
-        max: 999999999999,
+        min: PHONE_NUMBER_MIN,
+        max: PHONE_NUMBER_MAX,
         required: true,
         unique: true
 
@@ -88,7 +89,7 @@ const User = mongoose.model('User', schema);
 function validateSignup(body){
     const schema = {
         name: Joi.string().min(3).max(16).required(),
-        phone: Joi.number().min(1111).max(99999999999).required(),
+        phone: Joi.number().min(PHONE_NUMBER_MIN).max(PHONE_NUMBER_MAX).required(),
         email: Joi.string().min(4).max(64),
         password: Joi.string().min(4).max(128).required()
     }

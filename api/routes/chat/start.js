@@ -12,6 +12,7 @@ const {User} = require('../../../models/objects/users/user');
 const {Chat, validateStartChat} = require('../../../models/objects/chat/chat');
 const {validateMessage} = require('../../../models/schema/message');
 const {encrypt} = require('../../../models/helpers/cryptography');
+const {PHONE_NUMBER_MIN, PHONE_NUMBER_MAX, MESSAGE_LENGTH_MAX, MESSAGE_LENGTH_MIN} = require('../../../constants/constants');
 
 
 /**
@@ -52,8 +53,8 @@ router.post('/', auth, asyncMiddleware( async(req, res) => {
 
 function validateInputForm(body) {
     const schema = Joi.object({
-        giver: Joi.number().min(1111).max(99999999999).required(),//phone number, check user schema
-        message: Joi.string().min(1).max(256).required()//message length is max 256
+        giver: Joi.number().min(PHONE_NUMBER_MIN).max(PHONE_NUMBER_MAX).required(),//phone number, check user schema
+        message: Joi.string().min(MESSAGE_LENGTH_MIN).max(MESSAGE_LENGTH_MAX).required()//message length is max 256
     });
 
     return schema.validate(body);
