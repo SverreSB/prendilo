@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
+const Joi = require('joi');
 
 const crypto = require('crypto');
 const assert = require('assert');
@@ -11,18 +12,22 @@ const {User} = require('../../../models/objects/users/user');
 const {Chat, validateStartChat} = require('../../../models/objects/chat/chat');
 const {validateMessage} = require('../../../models/schema/message');
 const {encrypt} = require('../../../models/helpers/cryptography');
+const {PHONE_NUMBER_MIN, PHONE_NUMBER_MAX, MESSAGE_LENGTH_MAX, MESSAGE_LENGTH_MIN} = require('../../../constants/constants');
 
 
 /**
  *  Start a chat
+        Firstly validating the input
         creates message objects and validates it
         finds giver and reciver users, check if found
         create array of message object and array of participants and validates if it is a valid chat
         Creates chat, store the id in giver and receiver user and saves chat, giver and receiver update, to db
  */
 router.post('/', auth, asyncMiddleware( async(req, res) => {
-    console.log(encrypt(req.body.message))
-    let message = { "sender": req.user._id, "message": req.body.message };
+    const validateInput = validateInputForm(req.body);
+    if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
+
+    const message = { "sender": req.user._id, "message": encrypt(req.body.message) };
     const validateChatMessage = validateMessage(message);
     if(validateChatMessage.error) return res.status(400).send(validateChatMessage.error.details[0].message);
 
@@ -34,8 +39,8 @@ router.post('/', auth, asyncMiddleware( async(req, res) => {
     req.body.messages = [message];
     req.body.participants = [giver._id, receiver._id];
 
-    const validateInput = validateStartChat(_.pick(req.body, ['participants', 'messages']));
-    if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
+    const validateChat = validateStartChat(_.pick(req.body, ['participants', 'messages']));
+    if(validateChat.error) return res.status(400).send(validateChat.error.details[0].message);
 
     const chat = new Chat(_.pick(req.body, ['participants', 'messages']));
     receiver.chats.push(chat._id);
@@ -45,6 +50,15 @@ router.post('/', auth, asyncMiddleware( async(req, res) => {
     chat.save();
     res.status(200).send(chat);
 }))
+
+function validateInputForm(body) {
+    const schema = Joi.object({
+        giver: Joi.number().min(PHONE_NUMBER_MIN).max(PHONE_NUMBER_MAX).required(),//phone number, check user schema
+        message: Joi.string().min(MESSAGE_LENGTH_MIN).max(MESSAGE_LENGTH_MAX).required()//message length is max 256
+    });
+
+    return schema.validate(body);
+}
 
 function generatePublicKey() {
 
