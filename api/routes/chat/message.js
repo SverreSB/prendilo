@@ -40,13 +40,19 @@ router.post('/send', auth, asyncMiddleware( async(req, res) => {
 }))
 
 router.get('/get', asyncMiddleware( async(req, res) => {
-    const chat = await Chat.findById(req.body.chat_id);
+    const chat = await Chat.findById(req.body.chat_id,
+        (err) => {
+            if(err) return res.status(400).send(err.message)
+    });
+    
     const messages = chat.messages;
+    let content = []
     messages.forEach(messageObject => {
         const message = decrypt(messageObject.message);
-        console.log(message);
+        const date = new Date(messageObject.createdAt);  
+        content.push({"message": message, "sender": messageObject.sender, timestamp: date.toUTCString()});
     });
-    res.send('wuuut wut wut wut wut wuut wut')
+    res.status(200).send(content);
 }))
 
 

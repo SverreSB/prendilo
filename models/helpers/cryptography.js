@@ -4,7 +4,6 @@ const key = 'A Password We Agree Upon';
 
 function encrypt(text) {
     const iv = crypto.randomBytes(16);
-    console.log(iv);
     let cipher = crypto.createCipheriv(algorithm, key, iv);
     let encrypted = cipher.update(text, 'utf8', 'hex');
     encrypted += cipher.final('hex');
