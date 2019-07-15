@@ -28,7 +28,7 @@ router.post('/send', auth, asyncMiddleware( async(req, res) => {
 
     if(!chat) return res.status(400).send('Chat not found.');
 
-    if(chat.participants.indexOf(req.user._id) < 0 ) return res.status(400).send('Can\'t send message');
+    if(chat.participants.indexOf(req.user._id) < 0) return res.status(400).send('Can\'t send message');
 
     const message = { "sender": req.user._id, "message": encrypt(req.body.message)}
     const messageValidation = validateMessage(message);
@@ -39,12 +39,22 @@ router.post('/send', auth, asyncMiddleware( async(req, res) => {
     res.send('done');
 }))
 
-router.get('/get', asyncMiddleware( async(req, res) => {
+/**
+ *  Get chat messages router handler
+        finds chat from input
+        checks if user from auth is participant of chat to validate
+        iterates over messages in chat and adds it to array containing message, sender and timestamp
+        returns array containing object({message, sender, times})
+
+ */
+router.get('/get', auth, asyncMiddleware( async(req, res) => {
     const chat = await Chat.findById(req.body.chat_id,
         (err) => {
             if(err) return res.status(400).send(err.message)
     });
     
+    if(chat.participants.indexOf(req.user._id) < 0) return res.status(400).send("Can't access getting message when not a participant");
+
     const messages = chat.messages;
     let content = []
     messages.forEach(messageObject => {
