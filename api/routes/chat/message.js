@@ -6,7 +6,7 @@ const asyncMiddleware = require('../../../middleware/async');
 const auth = require('../../../middleware/auth');
 const {Chat} = require('../../../models/objects/chat/chat');
 const {validateMessage} = require('../../../models/schema/message');
-const {encrypt} = require('../../../models/helpers/cryptography');
+const {encrypt, decrypt} = require('../../../models/helpers/cryptography');
 const {ID_LENGTH, MESSAGE_LENGTH_MAX, MESSAGE_LENGTH_MIN} = require('../../../constants/constants');
 
 
@@ -37,6 +37,16 @@ router.post('/send', auth, asyncMiddleware( async(req, res) => {
     chat.messages.push(message);
     chat.save();
     res.send('done');
+}))
+
+router.get('/get', asyncMiddleware( async(req, res) => {
+    const chat = await Chat.findById(req.body.chat_id);
+    const messages = chat.messages;
+    messages.forEach(messageObject => {
+        const message = decrypt(messageObject.message);
+        console.log(message);
+    });
+    res.send('wuuut wut wut wut wut wuut wut')
 }))
 
 
