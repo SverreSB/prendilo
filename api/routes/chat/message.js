@@ -58,9 +58,8 @@ router.get('/get', auth, asyncMiddleware( async(req, res) => {
     const messages = chat.messages;
     let content = []
     messages.forEach(messageObject => {
-        const message = decrypt(messageObject.message);
-        const date = new Date(messageObject.createdAt);  
-        content.push({"message": message, "sender": messageObject.sender, timestamp: date.toUTCString()});
+        const message = decrypt(messageObject.message); 
+        content.push({"message": message, "sender": messageObject.sender, timestamp: messageObject.createdAt});
     });
     res.status(200).send(content);
 }))
