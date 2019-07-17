@@ -15,7 +15,7 @@ const {ID_LENGTH, MESSAGE_LENGTH_MAX, MESSAGE_LENGTH_MIN} = require('../../../co
         Finds chat object in db, returns if not
         checks if sender is a participant of chat
         creates message object and validates it
-        saves message the messages array in chat object
+        saves encrypted message to the messages array in chat object
  */
 router.post('/send', auth, asyncMiddleware( async(req, res) => {
     const inputValidation = validateInput(req.body);
@@ -45,7 +45,7 @@ router.post('/send', auth, asyncMiddleware( async(req, res) => {
  *  Get chat messages router handler
         finds chat from input
         checks if user from auth is participant of chat to validate
-        iterates over messages in chat and adds it to array containing message, sender and timestamp
+        iterates over messages in chat and adds it to array containing decrypted message, sender and timestamp
         returns array containing object({message, sender, times})
 
  */

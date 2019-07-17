@@ -19,7 +19,7 @@ const {PHONE_NUMBER_MIN, PHONE_NUMBER_MAX, MESSAGE_LENGTH_MAX, MESSAGE_LENGTH_MI
 /**
  *  Start a chat
         Firstly validating the input
-        creates message objects and validates it
+        creates encrypted message objects and validates it
         finds giver and reciver users, check if found
         create array of message object and array of participants and validates if it is a valid chat
         Creates chat, store the id in giver and receiver user and saves chat, giver and receiver update, to db
