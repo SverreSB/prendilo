@@ -4,6 +4,7 @@ const _ = require('lodash');
 const Joi = require('joi');
 
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 const assert = require('assert');
 
 const asyncMiddleware = require('../../../middleware/async');
@@ -27,7 +28,8 @@ router.post('/', auth, asyncMiddleware( async(req, res) => {
     const validateInput = validateInputForm(req.body);
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
 
-    const message = { "sender": req.user._id, "message": encrypt(req.body.message) };
+    const key = 'A Password We Agree Upon';
+    const message = { "sender": req.user._id, "message": encrypt(req.body.message, key) };
     const validateChatMessage = validateMessage(message);
     if(validateChatMessage.error) return res.status(400).send(validateChatMessage.error.details[0].message);
 
@@ -48,7 +50,7 @@ router.post('/', auth, asyncMiddleware( async(req, res) => {
     receiver.save();
     giver.save();
     chat.save();
-    res.status(200).send(chat);
+    res.status(200).send({"chat": chat, "key": key});
 }))
 
 function validateInputForm(body) {

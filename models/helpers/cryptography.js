@@ -1,8 +1,7 @@
 const crypto = require('crypto');
 const algorithm = 'aes-192-cbc';
-const key = 'A Password We Agree Upon';
 
-function encrypt(text) {
+function encrypt(text, key) {
     const iv = crypto.randomBytes(16);
     let cipher = crypto.createCipheriv(algorithm, key, iv);
     let encrypted = cipher.update(text, 'utf8', 'hex');
@@ -10,7 +9,7 @@ function encrypt(text) {
     return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
 }
 
-function decrypt(text) {
+function decrypt(text, key) {
     const iv = Buffer.from(text.iv, 'hex');
     const decipher = crypto.createDecipheriv(algorithm, key, iv);
     const encryptedText = Buffer.from(text.encryptedData, 'hex');

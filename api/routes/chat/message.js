@@ -30,7 +30,9 @@ router.post('/send', auth, asyncMiddleware( async(req, res) => {
 
     if(chat.participants.indexOf(req.user._id) < 0) return res.status(400).send('Can\'t send message');
 
-    const message = { "sender": req.user._id, "message": encrypt(req.body.message)}
+    const key = req.body.key;
+
+    const message = { "sender": req.user._id, "message": encrypt(req.body.message, key)}
     const messageValidation = validateMessage(message);
     if(messageValidation.error) return res.status(400).send(messageValidation.error.details[0].message);
 
@@ -52,13 +54,13 @@ router.get('/get', auth, asyncMiddleware( async(req, res) => {
         (err) => {
             if(err) return res.status(400).send(err.message)
     });
-    
+
     if(chat.participants.indexOf(req.user._id) < 0) return res.status(400).send("Can't access getting message when not a participant");
 
     const messages = chat.messages;
     let content = []
     messages.forEach(messageObject => {
-        const message = decrypt(messageObject.message); 
+        const message = decrypt(messageObject.message, req.body.key); 
         content.push({"message": message, "sender": messageObject.sender, timestamp: messageObject.createdAt});
     });
     res.status(200).send(content);
@@ -68,7 +70,8 @@ router.get('/get', auth, asyncMiddleware( async(req, res) => {
 function validateInput(body) {
     const schema = Joi.object({
         chat_id: Joi.string().length(ID_LENGTH).required(),
-        message: Joi.string().min(MESSAGE_LENGTH_MIN).max(MESSAGE_LENGTH_MAX).required()
+        message: Joi.string().min(MESSAGE_LENGTH_MIN).max(MESSAGE_LENGTH_MAX).required(),
+        key: Joi.string().length(24).required()
     });
     return schema.validate(body);
 } 
