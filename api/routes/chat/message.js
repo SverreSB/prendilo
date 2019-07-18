@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
+const crypto = require('crypto');
 
 const asyncMiddleware = require('../../../middleware/async');
 const auth = require('../../../middleware/auth');
@@ -30,7 +31,7 @@ router.post('/send', auth, asyncMiddleware( async(req, res) => {
 
     if(chat.participants.indexOf(req.user._id) < 0) return res.status(400).send('Can\'t send message');
 
-    const key = req.body.key;
+    const key = crypto.createHash('sha256').update(String(req.body.key)).digest('base64').substr(0, 24);
 
     const message = { "sender": req.user._id, "message": encrypt(req.body.message, key)}
     const messageValidation = validateMessage(message);
@@ -58,9 +59,10 @@ router.get('/get', auth, asyncMiddleware( async(req, res) => {
     if(chat.participants.indexOf(req.user._id) < 0) return res.status(400).send("Can't access getting message when not a participant");
 
     const messages = chat.messages;
+    const key = crypto.createHash('sha256').update(String(req.body.key)).digest('base64').substr(0, 24);
     let content = []
     messages.forEach(messageObject => {
-        const message = decrypt(messageObject.message, req.body.key); 
+        const message = decrypt(messageObject.message, key); 
         content.push({"message": message, "sender": messageObject.sender, timestamp: messageObject.createdAt});
     });
     res.status(200).send(content);
@@ -71,7 +73,7 @@ function validateInput(body) {
     const schema = Joi.object({
         chat_id: Joi.string().length(ID_LENGTH).required(),
         message: Joi.string().min(MESSAGE_LENGTH_MIN).max(MESSAGE_LENGTH_MAX).required(),
-        key: Joi.string().length(24).required()
+        key: Joi.string().length(6).required()
     });
     return schema.validate(body);
 } 
