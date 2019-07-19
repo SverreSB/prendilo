@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 
 const asyncMiddleware = require('../../../middleware/async');
 const auth = require('../../../middleware/auth');
@@ -15,6 +16,7 @@ const {ID_LENGTH, MESSAGE_LENGTH_MAX, MESSAGE_LENGTH_MIN} = require('../../../co
  *  Send a message router handler
         Finds chat object in db, returns if not
         checks if sender is a participant of chat
+        Validates key after hashing key from request body
         creates message object and validates it
         saves encrypted message to the messages array in chat object
  */
@@ -32,6 +34,8 @@ router.post('/send', auth, asyncMiddleware( async(req, res) => {
     if(chat.participants.indexOf(req.user._id) < 0) return res.status(400).send('Can\'t send message');
 
     const key = crypto.createHash('sha256').update(String(req.body.key)).digest('base64').substr(0, 24);
+    const validKey= await bcrypt.compare(key, chat.key);
+    if(!validKey) return res.status(400).send('Invalid key');
 
     const message = { "sender": req.user._id, "message": encrypt(req.body.message, key)}
     const messageValidation = validateMessage(message);
@@ -46,6 +50,7 @@ router.post('/send', auth, asyncMiddleware( async(req, res) => {
  *  Get chat messages router handler
         finds chat from input
         checks if user from auth is participant of chat to validate
+        Validates key after hashing key from request body
         iterates over messages in chat and adds it to array containing decrypted message, sender and timestamp
         returns array containing object({message, sender, times})
 
@@ -59,7 +64,11 @@ router.get('/get', auth, asyncMiddleware( async(req, res) => {
     if(chat.participants.indexOf(req.user._id) < 0) return res.status(400).send("Can't access getting message when not a participant");
 
     const messages = chat.messages;
+
     const key = crypto.createHash('sha256').update(String(req.body.key)).digest('base64').substr(0, 24);
+    const validKey= await bcrypt.compare(key, chat.key);
+    if(!validKey) return res.status(400).send('Invalid key');
+
     let content = []
     messages.forEach(messageObject => {
         const message = decrypt(messageObject.message, key); 
