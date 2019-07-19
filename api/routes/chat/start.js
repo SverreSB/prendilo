@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
 const Joi = require('joi');
-
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 
 const assert = require('assert');
 
@@ -28,7 +28,8 @@ router.post('/', auth, asyncMiddleware( async(req, res) => {
     const validateInput = validateInputForm(req.body);
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
 
-    let key = crypto.createHash('sha256').update(String('123456')).digest('base64').substr(0, 24);
+    const secret = '123456'
+    let key = crypto.createHash('sha256').update(String(secret)).digest('base64').substr(0, 24);
     const message = { "sender": req.user._id, "message": encrypt(req.body.message, key) };
     const validateChatMessage = validateMessage(message);
     if(validateChatMessage.error) return res.status(400).send(validateChatMessage.error.details[0].message);
@@ -40,17 +41,18 @@ router.post('/', auth, asyncMiddleware( async(req, res) => {
 
     req.body.messages = [message];
     req.body.participants = [giver._id, receiver._id];
+    req.body.key = await saltAndHash(key);
 
-    const validateChat = validateStartChat(_.pick(req.body, ['participants', 'messages']));
+    const validateChat = validateStartChat(_.pick(req.body, ['participants', 'messages', 'key']));
     if(validateChat.error) return res.status(400).send(validateChat.error.details[0].message);
 
-    const chat = new Chat(_.pick(req.body, ['participants', 'messages']));
+    const chat = new Chat(_.pick(req.body, ['participants', 'messages', 'key']));
     receiver.chats.push(chat._id);
     giver.chats.push(chat._id);
     receiver.save();
     giver.save();
     chat.save();
-    res.status(200).send({"chat": chat, "key": key});
+    res.status(200).send({"chat": chat, "secret": secret});
 }))
 
 function validateInputForm(body) {
@@ -62,24 +64,10 @@ function validateInputForm(body) {
     return schema.validate(body);
 }
 
-function generatePublicKey() {
-
-    // Generate Alice's keys...
-    const alice = crypto.createDiffieHellman(2048);
-    const aliceKey = alice.generateKeys();
-
-    // Generate Bob's keys...
-    const bob = crypto.createDiffieHellman(alice.getPrime(), alice.getGenerator());
-    const bobKey = bob.generateKeys();
-
-    // Exchange and generate the secret...
-    const aliceSecret = alice.computeSecret(bobKey);
-    const bobSecret = bob.computeSecret(aliceKey);
-    
-    // OK
-    assert.strictEqual(aliceSecret.toString('hex'), bobSecret.toString('hex'));
-    
-    return bobSecret;
+async function saltAndHash(key) {
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(key, salt);
+    return hash;
 }
 
 module.exports = router;    

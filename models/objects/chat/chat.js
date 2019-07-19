@@ -11,6 +11,10 @@ const schema = new mongoose.Schema({
     messages: {
         type: [MessageSchema],
         required: true
+    },
+    key: {
+        type: String, 
+        required: true
     }
 });
 
@@ -23,7 +27,8 @@ const Chat = mongoose.model('Chat', schema);
 function validateStartChat(body) {
     const schema = {
         participants: Joi.array().required(),
-        messages: Joi.array().required()
+        messages: Joi.array().required(),
+        key: Joi.string().required()
     }
 
     const validation = Joi.validate(body, schema);
