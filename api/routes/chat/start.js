@@ -28,7 +28,7 @@ router.post('/', auth, asyncMiddleware( async(req, res) => {
     const validateInput = validateInputForm(req.body);
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
 
-    const secret = '123456'
+    const secret = generateSecret();
     let key = crypto.createHash('sha256').update(String(secret)).digest('base64').substr(0, 24);
     const message = { "sender": req.user._id, "message": encrypt(req.body.message, key) };
     const validateChatMessage = validateMessage(message);
@@ -68,6 +68,10 @@ async function saltAndHash(key) {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(key, salt);
     return hash;
+}
+
+function generateSecret() {
+    return Math.floor((Math.random() * 999999) + 100000);
 }
 
 module.exports = router;    
