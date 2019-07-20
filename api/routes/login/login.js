@@ -12,7 +12,7 @@
 const asyncMiddleware= require('../../../middleware/async');
 const {User, validateLogin} = require('../../../models/objects/users/user');
 
-const {bcryptCompare} = require('../../../models/helpers/comparePw');
+const {bcryptCompare} = require('../../../models/helpers/compareKeyWithHash');
 const _ = require('lodash');
 var bodyParser= require('body-parser');
 const express = require('express');

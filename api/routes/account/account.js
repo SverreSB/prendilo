@@ -6,7 +6,7 @@ const router = express.Router();
 const auth = require('../../../middleware/auth');
 const {User, validatePassword} = require('../../../models/objects/users/user');
 const {Food} = require('../../../models/objects/food/food');
-const {bcryptCompare} = require('../../../models/helpers/comparePw');
+const {bcryptCompare} = require('../../../models/helpers/compareKeyWithHash');
 
 
 /**

@@ -10,6 +10,7 @@ const {Chat} = require('../../../models/objects/chat/chat');
 const {validateMessage} = require('../../../models/schema/message');
 const {encrypt, decrypt} = require('../../../models/helpers/cryptography');
 const {ID_LENGTH, MESSAGE_LENGTH_MAX, MESSAGE_LENGTH_MIN} = require('../../../constants/constants');
+const {bcryptCompare} = require('../../../models/helpers/compareKeyWithHash');
 
 
 /**
@@ -34,7 +35,7 @@ router.post('/send', auth, asyncMiddleware( async(req, res) => {
     if(chat.participants.indexOf(req.user._id) < 0) return res.status(400).send('Can\'t send message');
 
     const key = crypto.createHash('sha256').update(String(req.body.key)).digest('base64').substr(0, 24);
-    const validKey= await bcrypt.compare(key, chat.key);
+    const validKey= await bcryptCompare(key, chat.key);
     if(!validKey) return res.status(400).send('Invalid key');
 
     const message = { "sender": req.user._id, "message": encrypt(req.body.message, key)}

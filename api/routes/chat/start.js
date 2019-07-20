@@ -14,6 +14,8 @@ const {Chat, validateStartChat} = require('../../../models/objects/chat/chat');
 const {validateMessage} = require('../../../models/schema/message');
 const {encrypt} = require('../../../models/helpers/cryptography');
 const {PHONE_NUMBER_MIN, PHONE_NUMBER_MAX, MESSAGE_LENGTH_MAX, MESSAGE_LENGTH_MIN} = require('../../../constants/constants');
+const {saltAndHash} = require('../../../models/helpers/saltAndHash')
+const {generateSecret} = require('../../helpers/keys/generateKey');
 
 
 /**
@@ -62,16 +64,6 @@ function validateInputForm(body) {
     });
 
     return schema.validate(body);
-}
-
-async function saltAndHash(key) {
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(key, salt);
-    return hash;
-}
-
-function generateSecret() {
-    return Math.floor((Math.random() * 999999) + 100000);
 }
 
 module.exports = router;    

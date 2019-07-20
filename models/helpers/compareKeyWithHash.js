@@ -11,8 +11,8 @@
 const bcrypt = require('bcrypt');
 
 
-async function bcryptCompare(inputPw, hashedPw){
-    const isValid = await bcrypt.compare(inputPw, hashedPw);
+async function bcryptCompare(inputKey, hashedKey){
+    const isValid = await bcrypt.compare(inputKey, hashedKey);
     return isValid;
 }
 
