@@ -2,7 +2,7 @@
  
 
     Helper file containing functions using crypto library
-    Functions: encrypt, decrypt, generate
+    Functions: encrypt, decrypt, generate24ByteKey
  
 
  ******************************/
@@ -30,6 +30,7 @@ function decrypt(text, key) {
     return decrypted;
 }
 
+//Function that generates a hashed key with string length of 24 from secret using createHash
 function generate24ByteKey(secret) {
     const key = crypto.createHash('sha256').update(String(secret)).digest('base64').substr(0, 24)
     return key; 
