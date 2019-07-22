@@ -14,7 +14,7 @@ const {Chat, validateStartChat} = require('../../../models/objects/chat/chat');
 const {validateMessage} = require('../../../models/schema/message');
 const {encrypt} = require('../../../models/helpers/cryptography');
 const {PHONE_NUMBER_MIN, PHONE_NUMBER_MAX, MESSAGE_LENGTH_MAX, MESSAGE_LENGTH_MIN} = require('../../../constants/constants');
-const {saltAndHash} = require('../../../models/helpers/saltAndHash')
+const {salt, hash, compare} = require('../../helpers/cryptography/bcrypt');
 const {generateSecret} = require('../../helpers/keys/generateKey');
 
 
@@ -43,7 +43,8 @@ router.post('/', auth, asyncMiddleware( async(req, res) => {
 
     req.body.messages = [message];
     req.body.participants = [giver._id, receiver._id];
-    req.body.key = await saltAndHash(key);
+    const generatedSalt = await salt();
+    req.body.key = await hash(key, generatedSalt);
 
     const validateChat = validateStartChat(_.pick(req.body, ['participants', 'messages', 'key']));
     if(validateChat.error) return res.status(400).send(validateChat.error.details[0].message);
