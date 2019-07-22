@@ -84,7 +84,6 @@ const User = mongoose.model('User', schema);
 
 /**
  *  Function for validating that data given by user matches a given schema
- *  @param {*} body, json file
  */
 function validateSignup(body){
     const schema = {
@@ -102,7 +101,6 @@ function validateSignup(body){
 
 /**
  *  Function for validating passed in values when changeing password
- *  @param {*} body 
  */
 function validatePassword(body){
     const schema = {
@@ -119,7 +117,6 @@ function validatePassword(body){
 
 /**
  *  Function for validating user login with Joi
- *  @param {*} body, json file
  */
 function validateLogin(body){
     const schema = {
@@ -134,7 +131,6 @@ function validateLogin(body){
 
 /**
  *  Validating arraysize of location in user model
- *  @param {*} val 
  */
 function arrayLimit(val){ 
     return val.length == 2;

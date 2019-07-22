@@ -16,6 +16,7 @@ const router = express.Router();
 const {User, validateSignup} = require('../../../models/objects/users/user');
 const phoneValidation = require('../../helpers/signup/phoneValidation');
 const auth = require('../../../middleware/auth');
+const {salt, hash} = require('../../helpers/cryptography/bcrypt');
 
 
 
@@ -41,8 +42,8 @@ router.post('/', asyncMiddleware( async(req, res) => {
 
     user = new User(_.pick(req.body, ['name', 'phone', 'email', 'password', 'location', 'foodStamp', 'earnedStamps', 'validated']));
     
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
+    const generatedSalt = await salt(10);
+    user.password = await hash(user.password, generatedSalt);
     
     user.validated = phoneValidation(user.phone);
     user.save(function(err, result) {
