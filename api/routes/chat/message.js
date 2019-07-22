@@ -8,7 +8,7 @@ const asyncMiddleware = require('../../../middleware/async');
 const auth = require('../../../middleware/auth');
 const {Chat} = require('../../../models/objects/chat/chat');
 const {validateMessage} = require('../../../models/schema/message');
-const {encrypt, decrypt} = require('../../../models/helpers/cryptography');
+const {encrypt, decrypt, generate24ByteKey} = require('../../helpers/cryptography/crypto');
 const {compare} = require('../../helpers/cryptography/bcrypt');
 const {ID_LENGTH, MESSAGE_LENGTH_MAX, MESSAGE_LENGTH_MIN} = require('../../../constants/constants');
 
@@ -34,7 +34,7 @@ router.post('/send', auth, asyncMiddleware( async(req, res) => {
 
     if(chat.participants.indexOf(req.user._id) < 0) return res.status(400).send('Can\'t send message');
 
-    const key = crypto.createHash('sha256').update(String(req.body.key)).digest('base64').substr(0, 24);
+    const key = generate24ByteKey(req.body.secret);
     const validKey= await compare(key, chat.key);
     if(!validKey) return res.status(400).send('Invalid key');
 
@@ -66,7 +66,7 @@ router.get('/get', auth, asyncMiddleware( async(req, res) => {
 
     const messages = chat.messages;
 
-    const key = crypto.createHash('sha256').update(String(req.body.key)).digest('base64').substr(0, 24);
+    const key = generate24ByteKey(req.body.secret);
     const validKey= await compare(key, chat.key);
     if(!validKey) return res.status(400).send('Invalid key');
 
@@ -83,7 +83,7 @@ function validateInput(body) {
     const schema = Joi.object({
         chat_id: Joi.string().length(ID_LENGTH).required(),
         message: Joi.string().min(MESSAGE_LENGTH_MIN).max(MESSAGE_LENGTH_MAX).required(),
-        key: Joi.string().length(6).required()
+        secret: Joi.string().length(6).required()
     });
     return schema.validate(body);
 } 

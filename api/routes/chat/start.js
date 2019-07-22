@@ -12,9 +12,9 @@ const auth = require('../../../middleware/auth');
 const {User} = require('../../../models/objects/users/user');
 const {Chat, validateStartChat} = require('../../../models/objects/chat/chat');
 const {validateMessage} = require('../../../models/schema/message');
-const {encrypt} = require('../../../models/helpers/cryptography');
+const {encrypt, generate24ByteKey} = require('../../helpers/cryptography/crypto');
 const {PHONE_NUMBER_MIN, PHONE_NUMBER_MAX, MESSAGE_LENGTH_MAX, MESSAGE_LENGTH_MIN} = require('../../../constants/constants');
-const {salt, hash, compare} = require('../../helpers/cryptography/bcrypt');
+const {salt, hash} = require('../../helpers/cryptography/bcrypt');
 const {generateSecret} = require('../../helpers/keys/generateKey');
 
 
@@ -31,7 +31,7 @@ router.post('/', auth, asyncMiddleware( async(req, res) => {
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
 
     const secret = generateSecret();
-    let key = crypto.createHash('sha256').update(String(secret)).digest('base64').substr(0, 24);
+    let key = generate24ByteKey(secret);
     const message = { "sender": req.user._id, "message": encrypt(req.body.message, key) };
     const validateChatMessage = validateMessage(message);
     if(validateChatMessage.error) return res.status(400).send(validateChatMessage.error.details[0].message);
