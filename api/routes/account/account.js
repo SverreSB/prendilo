@@ -6,7 +6,7 @@ const router = express.Router();
 const auth = require('../../../middleware/auth');
 const {User, validatePassword} = require('../../../models/objects/users/user');
 const {Food} = require('../../../models/objects/food/food');
-const {bcryptCompare} = require('../../../models/helpers/comparePw');
+const {salt, hash, compare} = require('../../helpers/cryptography/bcrypt');
 
 
 /**
@@ -56,15 +56,15 @@ router.post('/password', auth, asyncMiddleware(async(req,res) => {
     if(validation.error) return res.status(400).send(validation.error.details[0].message);
 
     //Checking if password and confirm password is identical(should add functionallity to chack if old password match new)
-    if((req.body.new_password != req.body.confirm_password))return res.status(400).send('Confirm and new password must match');
+    if((req.body.new_password != req.body.confirm_password)) return res.status(400).send('Confirm and new password must match');
     
     //Validating that old password that is passed is correct
-    const validOldPw = await bcryptCompare(req.body.old_password, user.password);
+    const validOldPw = await compare(req.body.old_password, user.password);
     if(!validOldPw) return res.status(400).send('Mismatch password');
 
     //Salt and hash new PW, updating db with hash and salted pw
-    const salt = await bcrypt.genSalt(10);
-    req.body.new_password = await bcrypt.hash(req.body.new_password, salt);
+    const generatedSalt = await salt(10);
+    req.body.new_password = await hash(req.body.new_password, generatedSalt);
     const updateUser = await User.findByIdAndUpdate(req.user._id, {
         password: req.body.new_password
     });

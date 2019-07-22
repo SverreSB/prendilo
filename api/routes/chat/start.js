@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
 const Joi = require('joi');
-
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
+
 const assert = require('assert');
 
 const asyncMiddleware = require('../../../middleware/async');
@@ -11,14 +12,16 @@ const auth = require('../../../middleware/auth');
 const {User} = require('../../../models/objects/users/user');
 const {Chat, validateStartChat} = require('../../../models/objects/chat/chat');
 const {validateMessage} = require('../../../models/schema/message');
-const {encrypt} = require('../../../models/helpers/cryptography');
+const {encrypt, generate24ByteKey} = require('../../helpers/cryptography/crypto');
 const {PHONE_NUMBER_MIN, PHONE_NUMBER_MAX, MESSAGE_LENGTH_MAX, MESSAGE_LENGTH_MIN} = require('../../../constants/constants');
+const {salt, hash} = require('../../helpers/cryptography/bcrypt');
+const {generateSecret} = require('../../helpers/keys/generateKey');
 
 
 /**
  *  Start a chat
         Firstly validating the input
-        creates message objects and validates it
+        creates encrypted message objects and validates it
         finds giver and reciver users, check if found
         create array of message object and array of participants and validates if it is a valid chat
         Creates chat, store the id in giver and receiver user and saves chat, giver and receiver update, to db
@@ -27,7 +30,9 @@ router.post('/', auth, asyncMiddleware( async(req, res) => {
     const validateInput = validateInputForm(req.body);
     if(validateInput.error) return res.status(400).send(validateInput.error.details[0].message);
 
-    const message = { "sender": req.user._id, "message": encrypt(req.body.message) };
+    const secret = generateSecret();
+    let key = generate24ByteKey(secret);
+    const message = { "sender": req.user._id, "message": encrypt(req.body.message, key) };
     const validateChatMessage = validateMessage(message);
     if(validateChatMessage.error) return res.status(400).send(validateChatMessage.error.details[0].message);
 
@@ -38,17 +43,19 @@ router.post('/', auth, asyncMiddleware( async(req, res) => {
 
     req.body.messages = [message];
     req.body.participants = [giver._id, receiver._id];
+    const generatedSalt = await salt();
+    req.body.key = await hash(key, generatedSalt);
 
-    const validateChat = validateStartChat(_.pick(req.body, ['participants', 'messages']));
+    const validateChat = validateStartChat(_.pick(req.body, ['participants', 'messages', 'key']));
     if(validateChat.error) return res.status(400).send(validateChat.error.details[0].message);
 
-    const chat = new Chat(_.pick(req.body, ['participants', 'messages']));
+    const chat = new Chat(_.pick(req.body, ['participants', 'messages', 'key']));
     receiver.chats.push(chat._id);
     giver.chats.push(chat._id);
     receiver.save();
     giver.save();
     chat.save();
-    res.status(200).send(chat);
+    res.status(200).send({"chat": chat, "secret": secret});
 }))
 
 function validateInputForm(body) {
@@ -58,26 +65,6 @@ function validateInputForm(body) {
     });
 
     return schema.validate(body);
-}
-
-function generatePublicKey() {
-
-    // Generate Alice's keys...
-    const alice = crypto.createDiffieHellman(2048);
-    const aliceKey = alice.generateKeys();
-
-    // Generate Bob's keys...
-    const bob = crypto.createDiffieHellman(alice.getPrime(), alice.getGenerator());
-    const bobKey = bob.generateKeys();
-
-    // Exchange and generate the secret...
-    const aliceSecret = alice.computeSecret(bobKey);
-    const bobSecret = bob.computeSecret(aliceKey);
-    
-    // OK
-    assert.strictEqual(aliceSecret.toString('hex'), bobSecret.toString('hex'));
-    
-    return bobSecret;
 }
 
 module.exports = router;    

@@ -8,16 +8,14 @@
 
  ******************************/
 
-
-const asyncMiddleware= require('../../../middleware/async');
-const {User, validateLogin} = require('../../../models/objects/users/user');
-
-const {bcryptCompare} = require('../../../models/helpers/comparePw');
-const _ = require('lodash');
 var bodyParser= require('body-parser');
 const express = require('express');
 const router = express.Router();
 const app = express();
+
+const asyncMiddleware= require('../../../middleware/async');
+const {User, validateLogin} = require('../../../models/objects/users/user');
+const {compare} = require('../../helpers/cryptography/bcrypt');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -38,7 +36,7 @@ router.post('/', asyncMiddleware(async(req, res) => {
     const user = await User.findOne({phone: req.body.phone});
     if(!user) return res.status(400).send('Invalid username or password');
 
-    const validPassword = await bcryptCompare(req.body.password, user.password);
+    const validPassword = await compare(req.body.password, user.password);
     if(!validPassword || !user) return res.status(400).send('Invalid username or password');
 
     //Creating a jwt that is sent back as response. 
